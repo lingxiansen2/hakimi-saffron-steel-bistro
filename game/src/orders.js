@@ -1,7 +1,7 @@
 import { COMBO_WINDOW, SHIFTS } from './config.js';
 import { RECIPE_BY_ID } from './recipes.js';
 
-export class OrderBoard {
+export class OrderTicketQueue {
   constructor(shiftIndex = 1) {
     this.shift = SHIFTS[shiftIndex] || SHIFTS[1];
     this.orders = [];
@@ -31,11 +31,18 @@ export class OrderBoard {
 
   spawnOrder(initialPatienceRatio = 1) {
     if (this.orders.length >= this.shift.maxOrders) return null;
-    const pool = this.shift.allowedRecipes;
-    const recentIds = this.orders.slice(-2).map((o) => o.recipeId);
-    const filtered = pool.filter((id) => !recentIds.includes(id));
-    const choices = filtered.length > 0 ? filtered : pool;
-    const recipeId = choices[Math.floor(this.nextRand() * choices.length)];
+    const hasVip = this.orders.some((o) => RECIPE_BY_ID[o.recipeId]?.isVip);
+    let recipeId;
+    if (!hasVip && this.orders.length >= 2 && this.nextRand() < this.shift.vipChance) {
+      recipeId = 'surf_turf';
+    } else {
+      const pool = this.shift.allowedRecipes;
+      const recentIds = this.orders.slice(-2).map((o) => o.recipeId);
+      const filtered = pool.filter((id) => !recentIds.includes(id));
+      const choices = filtered.length > 0 ? filtered : pool;
+      recipeId = choices[Math.floor(this.nextRand() * choices.length)];
+    }
+
     const recipe = RECIPE_BY_ID[recipeId];
     const totalPatience = Math.round(recipe.patience * this.shift.patienceScale);
     const ticket = {
@@ -43,7 +50,7 @@ export class OrderBoard {
       recipeId,
       totalPatience,
       remaining: totalPatience * initialPatienceRatio,
-      enteredAt: 0,
+      isVip: Boolean(recipe.isVip),
       flash: 1,
     };
     this.orders.push(ticket);
@@ -53,9 +60,7 @@ export class OrderBoard {
   step(dt, events) {
     if (this.comboTimer > 0) {
       this.comboTimer = Math.max(0, this.comboTimer - dt);
-      if (this.comboTimer === 0) {
-        this.combo = 0;
-      }
+      if (this.comboTimer === 0) this.combo = 0;
     }
 
     for (let i = this.orders.length - 1; i >= 0; i--) {
@@ -73,7 +78,7 @@ export class OrderBoard {
 
     this.spawnCooldown -= dt;
     if (this.orders.length < 2) {
-      this.spawnCooldown = Math.min(this.spawnCooldown, 1.4);
+      this.spawnCooldown = Math.min(this.spawnCooldown, 1.3);
     }
     if (this.spawnCooldown <= 0 && this.orders.length < this.shift.maxOrders) {
       this.spawnOrder(1);
@@ -99,7 +104,7 @@ export class OrderBoard {
     this.comboTimer = COMBO_WINDOW;
     if (this.combo > this.maxCombo) this.maxCombo = this.combo;
 
-    const speedBonus = Math.round((ticket.remaining / ticket.totalPatience) * 45);
+    const speedBonus = Math.round((ticket.remaining / ticket.totalPatience) * (recipe.isVip ? 70 : 45));
     const comboMult = 1 + (this.combo - 1) * 0.25;
     const earned = Math.round((recipe.reward + speedBonus) * comboMult);
 
@@ -110,6 +115,7 @@ export class OrderBoard {
     return {
       recipeId,
       recipeName: recipe.shortName,
+      isVip: Boolean(recipe.isVip),
       earned,
       combo: this.combo,
       speedBonus,

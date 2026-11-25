@@ -11,7 +11,7 @@ import {
 } from './config.js';
 import { isWalkable, pxToTile, tileCenterPx } from './kitchen.js';
 
-export function createChef(col = 5, row = 3) {
+export function createChefState(col = 5, row = 3) {
   const pos = tileCenterPx(col, row);
   return {
     x: pos.x,
@@ -24,37 +24,29 @@ export function createChef(col = 5, row = 3) {
     walkPhase: 0,
     dashTime: 0,
     dashCooldown: 0,
+    dashTrail: [],
     autoPath: [],
     pendingInteract: null,
   };
 }
 
-export function triggerDash(chef) {
+export function triggerChefDash(chef) {
   if (chef.dashCooldown > 0 || chef.dashTime > 0) return false;
   chef.dashTime = CHEF_DASH_DURATION;
   chef.dashCooldown = CHEF_DASH_COOLDOWN;
   return true;
 }
 
-function canStandAt(kitchen, x, y) {
-  const r = CHEF_RADIUS;
-  const pts = [
-    [x - r, y - r],
-    [x + r, y - r],
-    [x - r, y + r],
-    [x + r, y + r],
-  ];
-  for (const [px, py] of pts) {
-    const col = Math.floor((px - GRID_ORIGIN_X) / TILE_W);
-    const row = Math.floor((py - GRID_ORIGIN_Y) / TILE_H);
-    if (!isWalkable(kitchen, col, row)) return false;
-  }
-  return true;
-}
-
-export function stepChef(chef, kitchen, inputVec, dt, onArriveStation) {
+export function stepChefMovement(chef, kitchen, inputVec, dt, onArriveStation) {
   if (chef.dashCooldown > 0) chef.dashCooldown = Math.max(0, chef.dashCooldown - dt);
-  if (chef.dashTime > 0) chef.dashTime = Math.max(0, chef.dashTime - dt);
+  if (chef.dashTime > 0) {
+    chef.dashTime = Math.max(0, chef.dashTime - dt);
+    chef.dashTrail.push({ x: chef.x, y: chef.y, life: 0.22 });
+  }
+  for (let i = chef.dashTrail.length - 1; i >= 0; i--) {
+    chef.dashTrail[i].life -= dt;
+    if (chef.dashTrail[i].life <= 0) chef.dashTrail.splice(i, 1);
+  }
 
   let moveX = inputVec.x;
   let moveY = inputVec.y;
@@ -76,12 +68,7 @@ export function stepChef(chef, kitchen, inputVec, dt, onArriveStation) {
       if (chef.autoPath.length === 0 && chef.pendingInteract) {
         const st = chef.pendingInteract;
         chef.pendingInteract = null;
-        const stPos = tileCenterPx(st.col, st.row);
-        const fx = stPos.x - chef.x;
-        const fy = stPos.y - chef.y;
-        const fLen = Math.hypot(fx, fy) || 1;
-        chef.facingX = fx / fLen;
-        chef.facingY = fy / fLen;
+        faceStation(chef, st);
         if (onArriveStation) onArriveStation(st);
       }
     } else {
@@ -93,12 +80,7 @@ export function stepChef(chef, kitchen, inputVec, dt, onArriveStation) {
     const cur = pxToTile(chef.x, chef.y);
     if (Math.abs(cur.col - st.col) + Math.abs(cur.row - st.row) <= 1) {
       chef.pendingInteract = null;
-      const stPos = tileCenterPx(st.col, st.row);
-      const fx = stPos.x - chef.x;
-      const fy = stPos.y - chef.y;
-      const fLen = Math.hypot(fx, fy) || 1;
-      chef.facingX = fx / fLen;
-      chef.facingY = fy / fLen;
+      faceStation(chef, st);
       if (onArriveStation) onArriveStation(st);
     }
   }
@@ -113,12 +95,8 @@ export function stepChef(chef, kitchen, inputVec, dt, onArriveStation) {
     const stepX = nx * speed * dt;
     const stepY = ny * speed * dt;
 
-    if (canStandAt(kitchen, chef.x + stepX, chef.y)) {
-      chef.x += stepX;
-    }
-    if (canStandAt(kitchen, chef.x, chef.y + stepY)) {
-      chef.y += stepY;
-    }
+    if (canStandAt(kitchen, chef.x + stepX, chef.y)) chef.x += stepX;
+    if (canStandAt(kitchen, chef.x, chef.y + stepY)) chef.y += stepY;
     chef.vx = nx * speed;
     chef.vy = ny * speed;
     chef.walkPhase += dt * (chef.dashTime > 0 ? 18 : 11);
@@ -126,4 +104,29 @@ export function stepChef(chef, kitchen, inputVec, dt, onArriveStation) {
     chef.vx = 0;
     chef.vy = 0;
   }
+}
+
+function faceStation(chef, st) {
+  const stPos = tileCenterPx(st.col, st.row);
+  const fx = stPos.x - chef.x;
+  const fy = stPos.y - chef.y;
+  const fLen = Math.hypot(fx, fy) || 1;
+  chef.facingX = fx / fLen;
+  chef.facingY = fy / fLen;
+}
+
+function canStandAt(kitchen, x, y) {
+  const r = CHEF_RADIUS;
+  const pts = [
+    [x - r, y - r],
+    [x + r, y - r],
+    [x - r, y + r],
+    [x + r, y + r],
+  ];
+  for (const [px, py] of pts) {
+    const col = Math.floor((px - GRID_ORIGIN_X) / TILE_W);
+    const row = Math.floor((py - GRID_ORIGIN_Y) / TILE_H);
+    if (!isWalkable(kitchen, col, row)) return false;
+  }
+  return true;
 }

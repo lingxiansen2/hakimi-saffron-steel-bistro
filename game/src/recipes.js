@@ -1,106 +1,28 @@
 export const INGREDIENTS = {
-  steak: {
-    id: 'steak',
-    name: 'Wagyu',
-    short: 'Wagyu',
-    color: '#b83939',
-    accent: '#f2c6c2',
-    action: 'sear',
-  },
-  seared_steak: {
-    id: 'seared_steak',
-    name: 'Seared Wagyu',
-    short: 'Seared Steak',
-    color: '#6e3423',
-    accent: '#df8c4c',
-    action: 'ready',
-  },
-  salmon: {
-    id: 'salmon',
-    name: 'Salmon',
-    short: 'Salmon',
-    color: '#f27c5c',
-    accent: '#ffd4c4',
-    action: 'sear',
-  },
-  seared_salmon: {
-    id: 'seared_salmon',
-    name: 'Seared Salmon',
-    short: 'Seared Salmon',
-    color: '#e86842',
-    accent: '#f7ca72',
-    action: 'ready',
-  },
-  bun: {
-    id: 'bun',
-    name: 'Brioche',
-    short: 'Brioche',
-    color: '#e29e44',
-    accent: '#f9d896',
-    action: 'ready',
-  },
-  tomato: {
-    id: 'tomato',
-    name: 'Tomato',
-    short: 'Tomato',
-    color: '#e23b32',
-    accent: '#59a646',
-    action: 'chop',
-  },
-  chopped_tomato: {
-    id: 'chopped_tomato',
-    name: 'Sliced Tomato',
-    short: 'Dice Tomato',
-    color: '#eb493b',
-    accent: '#ffd3b0',
-    action: 'ready',
-  },
-  greens: {
-    id: 'greens',
-    name: 'Greens',
-    short: 'Greens',
-    color: '#469e46',
-    accent: '#9be06c',
-    action: 'chop',
-  },
-  chopped_greens: {
-    id: 'chopped_greens',
-    name: 'Crisp Greens',
-    short: 'Cut Greens',
-    color: '#5eb854',
-    accent: '#bef28d',
-    action: 'ready',
-  },
-  herb: {
-    id: 'herb',
-    name: 'Saffron Herb',
-    short: 'Herb',
-    color: '#2c8a5e',
-    accent: '#f4b942',
-    action: 'chop',
-  },
-  chopped_herb: {
-    id: 'chopped_herb',
-    name: 'Minced Herb',
-    short: 'Minced Herb',
-    color: '#34a36e',
-    accent: '#ffd569',
-    action: 'ready',
-  },
-  burned: {
-    id: 'burned',
-    name: 'Charred Pan',
-    short: 'Burned!',
-    color: '#2a2626',
-    accent: '#685959',
-    action: 'trash',
-  },
+  steak: { id: 'steak', name: 'Wagyu Cut', short: 'Wagyu', action: 'sear' },
+  seared_steak: { id: 'seared_steak', name: 'Seared Wagyu', short: 'Seared Steak', action: 'ready' },
+  salmon: { id: 'salmon', name: 'Salmon Fillet', short: 'Salmon', action: 'sear' },
+  seared_salmon: { id: 'seared_salmon', name: 'Seared Salmon', short: 'Seared Salmon', action: 'ready' },
+  dashi: { id: 'dashi', name: 'Dashi Base', short: 'Dashi Base', action: 'simmer' },
+  saffron_broth: { id: 'saffron_broth', name: 'Saffron Broth', short: 'Saffron Broth', action: 'ready' },
+  dough: { id: 'dough', name: 'Brioche Dough', short: 'Dough', action: 'bake' },
+  baked_bun: { id: 'baked_bun', name: 'Baked Brioche', short: 'Brioche', action: 'ready' },
+  tomato: { id: 'tomato', name: 'Heirloom Tomato', short: 'Tomato', action: 'chop' },
+  chopped_tomato: { id: 'chopped_tomato', name: 'Sliced Tomato', short: 'Dice Tomato', action: 'ready' },
+  greens: { id: 'greens', name: 'Bistro Greens', short: 'Greens', action: 'chop' },
+  chopped_greens: { id: 'chopped_greens', name: 'Crisp Greens', short: 'Cut Greens', action: 'ready' },
+  herb: { id: 'herb', name: 'Saffron Herb', short: 'Herb', action: 'chop' },
+  chopped_herb: { id: 'chopped_herb', name: 'Minced Herb', short: 'Minced Herb', action: 'ready' },
+  berry: { id: 'berry', name: 'Forest Berries', short: 'Berries', action: 'chop' },
+  chopped_berry: { id: 'chopped_berry', name: 'Glazed Berries', short: 'Glaze Berries', action: 'ready' },
+  burned: { id: 'burned', name: 'Charred Pan', short: 'Burned!', action: 'trash' },
 };
 
 export const CHOP_RESULTS = {
   tomato: 'chopped_tomato',
   greens: 'chopped_greens',
   herb: 'chopped_herb',
+  berry: 'chopped_berry',
 };
 
 export const SEAR_RESULTS = {
@@ -108,54 +30,81 @@ export const SEAR_RESULTS = {
   salmon: 'seared_salmon',
 };
 
+export const SIMMER_RESULTS = {
+  dashi: 'saffron_broth',
+};
+
+export const BAKE_RESULTS = {
+  dough: 'baked_bun',
+};
+
 export const RECIPES = [
   {
     id: 'burger',
     name: 'Classic Bistro Burger',
     shortName: 'Bistro Burger',
-    ingredients: ['bun', 'seared_steak', 'chopped_greens'],
-    reward: 140,
-    patience: 48,
-    badgeColor: '#f0b14d',
+    ingredients: ['baked_bun', 'seared_steak', 'chopped_greens'],
+    reward: 150,
+    patience: 50,
+    isVip: false,
   },
   {
     id: 'wagyu',
     name: 'Herb-Seared Wagyu',
     shortName: 'Herb Wagyu',
     ingredients: ['seared_steak', 'chopped_herb', 'chopped_tomato'],
-    reward: 180,
+    reward: 185,
     patience: 52,
-    badgeColor: '#e26a4b',
+    isVip: false,
   },
   {
     id: 'salmon_bowl',
     name: 'Citrus Salmon Bowl',
     shortName: 'Salmon Bowl',
     ingredients: ['seared_salmon', 'chopped_greens', 'chopped_tomato'],
-    reward: 170,
+    reward: 175,
     patience: 50,
-    badgeColor: '#f38c5a',
+    isVip: false,
   },
   {
     id: 'bruschetta',
     name: 'Tomato Basil Bruschetta',
     shortName: 'Bruschetta',
-    ingredients: ['bun', 'chopped_tomato', 'chopped_herb'],
-    reward: 115,
-    patience: 40,
-    badgeColor: '#77c772',
+    ingredients: ['baked_bun', 'chopped_tomato', 'chopped_herb'],
+    reward: 135,
+    patience: 44,
+    isVip: false,
+  },
+  {
+    id: 'salmon_ramen',
+    name: 'Saffron Salmon Ramen',
+    shortName: 'Salmon Ramen',
+    ingredients: ['saffron_broth', 'seared_salmon', 'chopped_greens'],
+    reward: 230,
+    patience: 56,
+    isVip: false,
+  },
+  {
+    id: 'berry_tart',
+    name: 'Warm Berry Tart',
+    shortName: 'Berry Tart',
+    ingredients: ['baked_bun', 'chopped_berry', 'chopped_herb'],
+    reward: 165,
+    patience: 46,
+    isVip: false,
   },
   {
     id: 'surf_turf',
-    name: 'Surf & Turf Platter',
-    shortName: 'Surf & Turf',
-    ingredients: ['seared_steak', 'seared_salmon', 'chopped_herb'],
-    reward: 240,
-    patience: 58,
-    badgeColor: '#f4ca52',
+    name: 'VIP Surf & Turf',
+    shortName: 'VIP Surf & Turf',
+    ingredients: ['seared_steak', 'seared_salmon', 'saffron_broth'],
+    reward: 320,
+    patience: 60,
+    isVip: true,
   },
 ];
 
+export const MENU_CARDS = RECIPES.filter((r) => !r.isVip);
 export const RECIPE_BY_ID = Object.fromEntries(RECIPES.map((r) => [r.id, r]));
 
 export function isReadyIngredient(itemId) {
@@ -169,6 +118,14 @@ export function canChopItem(itemId) {
 
 export function canSearItem(itemId) {
   return Boolean(SEAR_RESULTS[itemId]);
+}
+
+export function canSimmerItem(itemId) {
+  return Boolean(SIMMER_RESULTS[itemId]);
+}
+
+export function canBakeItem(itemId) {
+  return Boolean(BAKE_RESULTS[itemId]);
 }
 
 export function findMatchingRecipes(heldIngredients) {
