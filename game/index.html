@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saffron &amp; Steel: Bistro Rush</title>
+  <link rel="stylesheet" href="./styles/bistro.css" />
+</head>
+<body>
+  <main id="bistro-stage" aria-label="Saffron and Steel Bistro Rush Game">
+    <canvas id="game-canvas" width="1280" height="720"></canvas>
+
+    <div id="hud-actions" class="hud-actions" aria-label="Kitchen Controls">
+      <button id="btn-sound" class="pill-btn" type="button" title="Toggle Sound (M)">Sound: On</button>
+      <button id="btn-guide" class="pill-btn" type="button" title="Recipe Book (?)">Recipes</button>
+      <button id="btn-pause" class="pill-btn" type="button" title="Pause Kitchen (P)">Pause</button>
+    </div>
+
+    <section id="title-overlay" class="modal-backdrop" aria-labelledby="title-heading">
+      <div class="bistro-card title-card">
+        <div class="crest-row">
+          <span class="crest-badge">FRENCH-JAPANESE FUSION</span>
+          <span class="crest-badge crest-gold">SERVICE RUSH</span>
+        </div>
+        <h1 id="title-heading">SAFFRON &amp; STEEL</h1>
+        <p class="subtitle">BISTRO RUSH &bull; MASTER THE LINE</p>
+        <p class="tagline">
+          Plan brisk routes around the island, sear Wagyu &amp; salmon on twin copper burners,
+          chop heirloom produce, assemble orders mid-flight, and ring the golden pass bell before patience runs dry.
+        </p>
+
+        <div id="title-recipe-strip" class="recipe-strip" aria-label="Menu Overview"></div>
+
+        <div class="shift-selector" role="group" aria-label="Select Shift">
+          <button class="shift-btn" data-shift="0" type="button">
+            <strong>Shift 1</strong>
+            <span>Prep Service</span>
+          </button>
+          <button class="shift-btn active" data-shift="1" type="button">
+            <strong>Shift 2</strong>
+            <span>Lunch Rush</span>
+          </button>
+          <button class="shift-btn" data-shift="2" type="button">
+            <strong>Shift 3</strong>
+            <span>Dinner Service</span>
+          </button>
+        </div>
+
+        <div class="cta-row">
+          <button id="btn-open-kitchen" class="primary-btn" type="button">OPEN KITCHEN</button>
+        </div>
+
+        <div class="controls-legend">
+          <span><strong>Move:</strong> WASD / Arrows or Click Station</span>
+          <span><strong>Act:</strong> Space / E or Click</span>
+          <span><strong>Dash:</strong> Q / Shift</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="guide-overlay" class="modal-backdrop hidden" aria-labelledby="guide-heading">
+      <div class="bistro-card guide-card">
+        <div class="card-header">
+          <h2 id="guide-heading">Chef&rsquo;s Ticket &amp; Station Guide</h2>
+          <button id="btn-close-guide" class="pill-btn" type="button">Resume</button>
+        </div>
+        <div id="guide-recipes" class="guide-grid"></div>
+        <div class="guide-tips">
+          <div><strong>Copper Stoves:</strong> Sear Wagyu &amp; Salmon. Pull off at green/gold before red burn!</div>
+          <div><strong>Butcher Boards:</strong> Chop Tomato, Greens &amp; Saffron Herb into crisp garnish.</div>
+          <div><strong>Assembly Islands:</strong> Combine all 3 ingredients in any order to auto-plate.</div>
+          <div><strong>Golden Bell Pass:</strong> Deliver finished plates in rapid succession to grow Combos!</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="clear-overlay" class="modal-backdrop hidden" aria-labelledby="clear-heading">
+      <div class="bistro-card clear-card">
+        <div id="clear-stars" class="stars-row" aria-label="Service Rating">&#9733;&#9733;&#9733;</div>
+        <h2 id="clear-heading">SERVICE COMPLETE</h2>
+        <p id="clear-subtitle" class="subtitle">LUNCH RUSH CLOSED IN STYLE</p>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-label">TOTAL REVENUE</span>
+            <strong id="clear-score" class="stat-val gold">$0</strong>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">PLATES SERVED</span>
+            <strong id="clear-served" class="stat-val">0</strong>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">BEST COMBO</span>
+            <strong id="clear-combo" class="stat-val">x1</strong>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">MISSED TICKETS</span>
+            <strong id="clear-missed" class="stat-val">0</strong>
+          </div>
+        </div>
+
+        <div id="clear-breakdown" class="breakdown-row"></div>
+
+        <div class="cta-row">
+          <button id="btn-next-shift" class="primary-btn" type="button">NEXT SHIFT</button>
+          <button id="btn-replay-shift" class="secondary-btn" type="button">REPLAY SHIFT</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

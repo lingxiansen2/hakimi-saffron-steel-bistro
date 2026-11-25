@@ -1,0 +1,441 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+:root {
+  --bg-deep: #14100f;
+  --espresso: #1e1816;
+  --walnut: #34251e;
+  --oak: #8c5a37;
+  --copper: #d87a32;
+  --saffron: #f4b942;
+  --cream: #fbf4e6;
+  --steel: #373c44;
+  --emerald: #2ea66f;
+  --crimson: #d94a3d;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 35%, #2b211c 0%, #14100f 78%);
+  color: var(--cream);
+  font-family: 'Trebuchet MS', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#bistro-stage {
+  position: relative;
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  max-width: 1280px;
+  max-height: 720px;
+  aspect-ratio: 16 / 9;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.72), 0 0 0 2px rgba(216, 122, 50, 0.35);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--espresso);
+}
+
+#game-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.hud-actions {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+}
+
+.pill-btn {
+  appearance: none;
+  border: 1px solid rgba(244, 185, 66, 0.45);
+  background: rgba(30, 24, 22, 0.92);
+  color: var(--cream);
+  font: 700 12px/1 'Trebuchet MS', 'Segoe UI', sans-serif;
+  letter-spacing: 0.4px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.pill-btn:hover {
+  background: #3d2c22;
+  border-color: var(--saffron);
+  transform: translateY(-1px);
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 12, 11, 0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 20px;
+}
+
+.modal-backdrop.hidden {
+  display: none;
+}
+
+.bistro-card {
+  background: linear-gradient(165deg, rgba(35, 27, 24, 0.96) 0%, rgba(22, 17, 15, 0.98) 100%);
+  border: 2px solid rgba(244, 185, 66, 0.6);
+  border-radius: 18px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.78), inset 0 1px 0 rgba(255, 244, 220, 0.14);
+  color: var(--cream);
+  padding: 24px 30px;
+  text-align: center;
+}
+
+.title-card {
+  width: min(820px, 92%);
+}
+
+.crest-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.crest-badge {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #e9d9c0;
+}
+
+.crest-gold {
+  background: rgba(244, 185, 66, 0.18);
+  border-color: rgba(244, 185, 66, 0.65);
+  color: var(--saffron);
+}
+
+h1 {
+  font-size: 46px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  line-height: 1.05;
+  background: linear-gradient(180deg, #fff5dc 15%, #f4b942 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 12px rgba(244, 185, 66, 0.18);
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2.6px;
+  color: var(--copper);
+}
+
+.tagline {
+  margin: 12px auto 16px;
+  max-width: 640px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #dfd2be;
+}
+
+.recipe-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.recipe-mini {
+  background: rgba(251, 244, 230, 0.07);
+  border: 1px solid rgba(244, 185, 66, 0.28);
+  border-radius: 10px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.recipe-mini .dish-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 13px;
+  color: #1d1512;
+  border: 2px solid #fff7e8;
+}
+
+.recipe-mini .dish-name {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--cream);
+  line-height: 1.15;
+}
+
+.recipe-mini .dish-price {
+  font-size: 11px;
+  font-weight: 800;
+  color: #7ee3a8;
+}
+
+.recipe-mini .dish-steps {
+  font-size: 10px;
+  color: #cbbaa2;
+  line-height: 1.2;
+}
+
+.shift-selector {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.shift-btn {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: var(--cream);
+  padding: 9px 18px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 146px;
+  transition: all 0.14s ease;
+}
+
+.shift-btn strong {
+  font-size: 14px;
+  color: var(--saffron);
+}
+
+.shift-btn span {
+  font-size: 11px;
+  color: #d6c8b2;
+}
+
+.shift-btn.active,
+.shift-btn:hover {
+  background: rgba(244, 185, 66, 0.18);
+  border-color: var(--saffron);
+  transform: translateY(-1px);
+}
+
+.cta-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.primary-btn {
+  appearance: none;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f7c759 0%, #d97c2b 100%);
+  color: #1f140e;
+  font: 900 17px/1 'Trebuchet MS', 'Segoe UI', sans-serif;
+  letter-spacing: 1.4px;
+  padding: 14px 36px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(217, 124, 43, 0.45);
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+.secondary-btn {
+  appearance: none;
+  border: 1.5px solid rgba(244, 185, 66, 0.55);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--cream);
+  font: 800 15px/1 'Trebuchet MS', 'Segoe UI', sans-serif;
+  letter-spacing: 1px;
+  padding: 14px 26px;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  background: rgba(244, 185, 66, 0.16);
+}
+
+.controls-legend {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  font-size: 12px;
+  color: #d8cbb8;
+}
+
+.controls-legend strong {
+  color: var(--saffron);
+}
+
+.guide-card {
+  width: min(780px, 92%);
+  text-align: left;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.card-header h2 {
+  font-size: 22px;
+  color: var(--saffron);
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.guide-item {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(244, 185, 66, 0.25);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.guide-item strong {
+  display: block;
+  font-size: 14px;
+  color: var(--cream);
+}
+
+.guide-item span {
+  font-size: 12px;
+  color: #cbbba3;
+}
+
+.guide-price {
+  font-weight: 900;
+  color: #7ee3a8;
+  font-size: 14px;
+}
+
+.guide-tips {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 14px;
+  font-size: 12px;
+  color: #dfd2be;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.guide-tips strong {
+  color: var(--saffron);
+}
+
+.clear-card {
+  width: min(650px, 88%);
+}
+
+.stars-row {
+  font-size: 40px;
+  letter-spacing: 8px;
+  color: var(--saffron);
+  text-shadow: 0 4px 18px rgba(244, 185, 66, 0.55);
+  margin-bottom: 4px;
+}
+
+.clear-card h2 {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--cream);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 18px 0 16px;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(244, 185, 66, 0.3);
+  border-radius: 12px;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stat-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #c9b9a3;
+}
+
+.stat-val {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--cream);
+}
+
+.stat-val.gold {
+  color: var(--saffron);
+}
+
+.breakdown-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.breakdown-chip {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(46, 166, 111, 0.18);
+  border: 1px solid rgba(126, 227, 168, 0.45);
+  color: #d8f8e5;
+}
