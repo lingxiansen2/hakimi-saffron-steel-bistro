@@ -1,3 +1,4 @@
+import { getDishSprite } from './assets.js';
 import { drawPorcelainPlate, traceRoundedRect } from './drawPrimitives.js';
 
 export function renderIngredientArt(ctx, itemId, cx, cy, scale = 1) {
@@ -67,36 +68,31 @@ export function renderIngredientArt(ctx, itemId, cx, cy, scale = 1) {
 export function renderPlatedDish(ctx, recipeId, cx, cy, scale = 1, glow = false) {
   ctx.save();
   ctx.translate(cx, cy);
-  ctx.scale(scale * 1.3, scale * 1.3);
+  ctx.scale(scale * 1.24, scale * 1.24);
 
-  drawPorcelainPlate(ctx, 25, glow);
-
-  switch (recipeId) {
-    case 'burger':
-      drawBurgerDish(ctx);
-      break;
-    case 'wagyu':
-      drawWagyuDish(ctx);
-      break;
-    case 'salmon_bowl':
-      drawSalmonBowlDish(ctx);
-      break;
-    case 'bruschetta':
-      drawBruschettaDish(ctx);
-      break;
-    case 'salmon_ramen':
-      drawSalmonRamenDish(ctx);
-      break;
-    case 'berry_tart':
-      drawBerryTartDish(ctx);
-      break;
-    case 'surf_turf':
-      drawSurfTurfDish(ctx);
-      break;
-    default:
-      break;
+  const sprite = getDishSprite(recipeId);
+  if (sprite) {
+    if (glow) {
+      ctx.save();
+      ctx.shadowColor = 'rgba(244, 185, 66, 0.95)';
+      ctx.shadowBlur = 18;
+      ctx.fillStyle = 'rgba(244, 185, 66, 0.42)';
+      ctx.beginPath();
+      ctx.ellipse(0, 1, 27, 23, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+    ctx.beginPath();
+    ctx.ellipse(0, 5, 24, 19, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.drawImage(sprite, -27, -27, 54, 54);
+    ctx.restore();
+    return;
   }
 
+  drawPorcelainPlate(ctx, 24, glow);
+  drawFallbackDish(ctx, recipeId);
   ctx.restore();
 }
 
@@ -177,15 +173,9 @@ function drawSearedWagyu(ctx) {
   ctx.lineTo(7, 7);
   ctx.moveTo(7, -7);
   ctx.lineTo(12, 4);
-  ctx.moveTo(-11, 2);
-  ctx.lineTo(10, -4);
   ctx.stroke();
   ctx.fillStyle = '#f8cf54';
   traceRoundedRect(ctx, -5, -4, 9, 6, 1.5);
-  ctx.fill();
-  ctx.fillStyle = '#339e62';
-  ctx.beginPath();
-  ctx.arc(1, -2, 1.8, 0, Math.PI * 2);
   ctx.fill();
 }
 
@@ -195,8 +185,8 @@ function drawRawSalmon(ctx) {
   ctx.ellipse(1, 5, 19, 11, -0.2, 0, Math.PI * 2);
   ctx.fill();
   ctx.fillStyle = '#f67e56';
-  ctx.strokeStyle = '#b9482e';
-  ctx.lineWidth = 1.8;
+  ctx.strokeStyle = '#732414';
+  ctx.lineWidth = 2;
   traceRoundedRect(ctx, -17, -9, 34, 18, 7);
   ctx.fill();
   ctx.stroke();
@@ -216,7 +206,7 @@ function drawSearedSalmon(ctx) {
   ctx.ellipse(1, 5, 19, 11, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.fillStyle = '#e5653e';
-  ctx.strokeStyle = '#8b2f17';
+  ctx.strokeStyle = '#631d0c';
   ctx.lineWidth = 2;
   traceRoundedRect(ctx, -17, -9, 34, 18, 7);
   ctx.fill();
@@ -264,19 +254,14 @@ function drawSaffronBrothBowl(ctx) {
   ctx.beginPath();
   ctx.arc(0, 1, 10.5, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = 'rgba(255, 250, 224, 0.72)';
-  ctx.lineWidth = 1.4;
-  ctx.beginPath();
-  ctx.arc(0, 1, 6, 0.3, Math.PI * 1.4);
-  ctx.stroke();
   ctx.fillStyle = '#d93d2c';
   ctx.fillRect(-3, -2, 6, 2);
 }
 
 function drawBriocheDough(ctx) {
   ctx.fillStyle = '#f2deb6';
-  ctx.strokeStyle = '#bf9a5b';
-  ctx.lineWidth = 1.6;
+  ctx.strokeStyle = '#8b6830';
+  ctx.lineWidth = 1.8;
   ctx.beginPath();
   ctx.arc(-5, 2, 9, 0, Math.PI * 2);
   ctx.arc(6, -1, 8, 0, Math.PI * 2);
@@ -319,10 +304,6 @@ function drawWholeTomato(ctx) {
   ctx.arc(0, 1, 13.5, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
-  ctx.fillStyle = 'rgba(255, 212, 200, 0.62)';
-  ctx.beginPath();
-  ctx.ellipse(-5, -4, 4, 2.3, -0.5, 0, Math.PI * 2);
-  ctx.fill();
   ctx.fillStyle = '#48a143';
   ctx.beginPath();
   ctx.moveTo(0, -13);
@@ -340,8 +321,8 @@ function drawWholeTomato(ctx) {
 function drawSlicedTomato(ctx) {
   for (const [ox, oy] of [[-7, 3], [6, 4], [0, -4]]) {
     ctx.fillStyle = '#ea3f35';
-    ctx.strokeStyle = '#9e1e18';
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#75120d';
+    ctx.lineWidth = 1.6;
     ctx.beginPath();
     ctx.arc(ox, oy, 8, 0, Math.PI * 2);
     ctx.fill();
@@ -361,28 +342,16 @@ function drawWholeGreens(ctx) {
   ctx.arc(5, 2, 10, 0, Math.PI * 2);
   ctx.fill();
   ctx.fillStyle = '#5fc257';
-  ctx.strokeStyle = '#25662c';
-  ctx.lineWidth = 1.6;
+  ctx.strokeStyle = '#1b4f20';
+  ctx.lineWidth = 1.8;
   ctx.beginPath();
   ctx.arc(0, -2, 11.5, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
-  ctx.strokeStyle = '#bbf59f';
-  ctx.lineWidth = 1.6;
-  ctx.beginPath();
-  ctx.moveTo(0, 6);
-  ctx.lineTo(0, -8);
-  ctx.stroke();
 }
 
 function drawShreddedGreens(ctx) {
-  for (const [x, y, rot, col] of [
-    [-9, 3, -0.4, '#47aa45'],
-    [4, 4, 0.35, '#59c252'],
-    [-3, -2, 0.15, '#7de06c'],
-    [7, -3, -0.5, '#3b963d'],
-    [-8, -5, 0.45, '#91ec7a'],
-  ]) {
+  for (const [x, y, rot, col] of [[-9, 3, -0.4, '#47aa45'], [4, 4, 0.35, '#59c252'], [-3, -2, 0.15, '#7de06c'], [7, -3, -0.5, '#3b963d']]) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(rot);
@@ -394,14 +363,14 @@ function drawShreddedGreens(ctx) {
 }
 
 function drawWholeHerb(ctx) {
-  ctx.strokeStyle = '#216e47';
+  ctx.strokeStyle = '#1e5c3b';
   ctx.lineWidth = 2.4;
   ctx.beginPath();
   ctx.moveTo(-10, 10);
   ctx.quadraticCurveTo(0, 0, 10, -10);
   ctx.stroke();
   ctx.fillStyle = '#35aa6b';
-  for (const [lx, ly, ang] of [[-5, 4, -0.7], [1, 1, 0.5], [4, -4, -0.6], [-2, -2, 0.4]]) {
+  for (const [lx, ly, ang] of [[-5, 4, -0.7], [1, 1, 0.5], [4, -4, -0.6]]) {
     ctx.save();
     ctx.translate(lx, ly);
     ctx.rotate(ang);
@@ -415,8 +384,6 @@ function drawWholeHerb(ctx) {
   ctx.beginPath();
   ctx.moveTo(4, -5);
   ctx.lineTo(11, -11);
-  ctx.moveTo(5, -3);
-  ctx.lineTo(13, -4);
   ctx.stroke();
 }
 
@@ -428,24 +395,19 @@ function drawMincedHerb(ctx) {
     ctx.fill();
   }
   ctx.fillStyle = '#f5c447';
-  for (const [sx, sy] of [[-4, 1], [3, 0], [1, -6], [-7, -1]]) {
-    ctx.fillRect(sx, sy, 4, 2);
-  }
+  ctx.fillRect(-4, 1, 4, 2);
+  ctx.fillRect(3, 0, 4, 2);
 }
 
 function drawWholeBerries(ctx) {
   for (const [bx, by, col] of [[-6, 3, '#c82b52'], [6, 4, '#3e4c9c'], [0, -5, '#df3862']]) {
     ctx.fillStyle = col;
     ctx.strokeStyle = '#27142e';
-    ctx.lineWidth = 1.4;
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.arc(bx, by, 7, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,0.45)';
-    ctx.beginPath();
-    ctx.arc(bx - 2, by - 2, 1.8, 0, Math.PI * 2);
-    ctx.fill();
   }
 }
 
@@ -470,169 +432,31 @@ function drawBurnedMass(ctx) {
   ctx.ellipse(0, 0, 16, 11, 0.2, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
-  ctx.strokeStyle = '#e0692b';
-  ctx.lineWidth = 1.6;
-  ctx.beginPath();
-  ctx.moveTo(-6, -3);
-  ctx.lineTo(2, 2);
-  ctx.lineTo(7, -2);
-  ctx.stroke();
 }
 
-function drawBurgerDish(ctx) {
-  ctx.fillStyle = '#c87e30';
-  traceRoundedRect(ctx, -14, 3, 28, 7, 3);
-  ctx.fill();
-  ctx.fillStyle = '#5eb854';
-  traceRoundedRect(ctx, -15, -1, 30, 5, 2.5);
-  ctx.fill();
-  ctx.fillStyle = '#6b2f1d';
-  traceRoundedRect(ctx, -14, -6, 28, 7, 3);
-  ctx.fill();
-  ctx.fillStyle = '#f0ab49';
+function drawFallbackDish(ctx, recipeId) {
+  const palette = {
+    burger: ['#eda949', '#6b2f1d', '#5eb854'],
+    wagyu: ['#70301e', '#eb4438', '#f6cc52'],
+    salmon_bowl: ['#eb6c44', '#60c659', '#f7d55c'],
+    bruschetta: ['#e59d45', '#e93f33', '#33a368'],
+    salmon_ramen: ['#f0a636', '#eb6d43', '#53b856'],
+    berry_tart: ['#df9c45', '#c82b52', '#39ac68'],
+    wagyu_ramen: ['#f0a636', '#70301e', '#35a96b'],
+    salmon_brioche: ['#eda949', '#eb6c44', '#e93f33'],
+    surf_turf: ['#6f301e', '#ea6a41', '#f5ca52'],
+    royal_tasting: ['#6f301e', '#c82b52', '#f5ca52'],
+  }[recipeId] || ['#d87a32', '#f4b942', '#2ea66f'];
+  ctx.fillStyle = palette[0];
   ctx.beginPath();
-  ctx.arc(0, -5, 14, Math.PI, 0);
-  ctx.closePath();
+  ctx.ellipse(-4, 2, 13, 9, 0, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = '#fff6d4';
-  ctx.fillRect(-5, -13, 2.5, 1.8);
-  ctx.fillRect(2, -14, 2.5, 1.8);
-}
-
-function drawWagyuDish(ctx) {
-  ctx.fillStyle = '#70301e';
-  ctx.strokeStyle = '#3d170c';
-  ctx.lineWidth = 1.6;
+  ctx.fillStyle = palette[1];
   ctx.beginPath();
-  ctx.ellipse(-2, 1, 14, 9.5, -0.15, 0, Math.PI * 2);
+  ctx.arc(7, -3, 7.5, 0, Math.PI * 2);
   ctx.fill();
-  ctx.stroke();
-  ctx.fillStyle = '#eb4438';
+  ctx.fillStyle = palette[2];
   ctx.beginPath();
-  ctx.arc(10, -4, 5.5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#2f9e64';
-  ctx.beginPath();
-  ctx.arc(-3, -4, 4, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#f6cc52';
-  ctx.fillRect(-5, -6, 6, 3);
-}
-
-function drawSalmonBowlDish(ctx) {
-  ctx.fillStyle = '#60c659';
-  ctx.beginPath();
-  ctx.arc(-5, 2, 11, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#eb4438';
-  ctx.beginPath();
-  ctx.arc(9, 4, 6, 0, Math.PI * 2);
-  ctx.arc(8, -5, 5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#eb6c44';
-  ctx.strokeStyle = '#923017';
-  ctx.lineWidth = 1.4;
-  traceRoundedRect(ctx, -12, -8, 19, 11, 4);
-  ctx.fill();
-  ctx.stroke();
-  ctx.fillStyle = '#f7d55c';
-  ctx.beginPath();
-  ctx.arc(-8, -9, 4, 0, Math.PI);
-  ctx.fill();
-}
-
-function drawBruschettaDish(ctx) {
-  for (const [bx, by] of [[-7, 2], [6, -2]]) {
-    ctx.fillStyle = '#e59d45';
-    ctx.strokeStyle = '#995b19';
-    ctx.lineWidth = 1.3;
-    traceRoundedRect(ctx, bx - 9, by - 5, 18, 11, 4);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = '#e93f33';
-    ctx.beginPath();
-    ctx.arc(bx - 2, by, 3.5, 0, Math.PI * 2);
-    ctx.arc(bx + 3, by + 1, 3, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#33a368';
-    ctx.beginPath();
-    ctx.arc(bx, by - 2, 2.5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
-function drawSalmonRamenDish(ctx) {
-  ctx.fillStyle = '#262120';
-  ctx.strokeStyle = '#d87a32';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 17, 14, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  ctx.fillStyle = '#f0a636';
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 14, 11, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#eb6d43';
-  traceRoundedRect(ctx, -11, -6, 15, 9, 3);
-  ctx.fill();
-  ctx.fillStyle = '#53b856';
-  ctx.beginPath();
-  ctx.arc(8, 3, 5.5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#fff5df';
-  ctx.beginPath();
-  ctx.arc(6, -5, 4.5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#f4b942';
-  ctx.beginPath();
-  ctx.arc(6, -5, 2.2, 0, Math.PI * 2);
-  ctx.fill();
-}
-
-function drawBerryTartDish(ctx) {
-  ctx.fillStyle = '#df9c45';
-  ctx.strokeStyle = '#995c1c';
-  ctx.lineWidth = 1.6;
-  ctx.beginPath();
-  ctx.ellipse(0, 1, 15, 12, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  ctx.fillStyle = '#c82b52';
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 11, 8.5, 0, 0, Math.PI * 2);
-  ctx.fill();
-  for (const [bx, by, col] of [[-4, -1, '#ff5f85'], [5, 1, '#4f62bf'], [1, -4, '#eb3d66']]) {
-    ctx.fillStyle = col;
-    ctx.beginPath();
-    ctx.arc(bx, by, 3.6, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.fillStyle = '#39ac68';
-  ctx.beginPath();
-  ctx.arc(-1, 3, 3, 0, Math.PI * 2);
-  ctx.fill();
-}
-
-function drawSurfTurfDish(ctx) {
-  ctx.strokeStyle = '#f5ca52';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 16, 12, 0, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.fillStyle = '#6f301e';
-  ctx.beginPath();
-  ctx.ellipse(-6, 3, 11, 7.5, -0.2, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#ea6a41';
-  traceRoundedRect(ctx, 1, -8, 15, 10, 4);
-  ctx.fill();
-  ctx.fillStyle = '#f5ca52';
-  ctx.beginPath();
-  ctx.arc(0, -1, 4.2, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#35a96b';
-  ctx.beginPath();
-  ctx.arc(-5, -5, 3.5, 0, Math.PI * 2);
+  ctx.arc(-2, -6, 4.5, 0, Math.PI * 2);
   ctx.fill();
 }

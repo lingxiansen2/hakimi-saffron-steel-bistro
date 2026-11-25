@@ -94,6 +94,24 @@ export const RECIPES = [
     isVip: false,
   },
   {
+    id: 'wagyu_ramen',
+    name: 'Saffron Wagyu Ramen',
+    shortName: 'Wagyu Ramen',
+    ingredients: ['saffron_broth', 'seared_steak', 'chopped_herb'],
+    reward: 245,
+    patience: 56,
+    isVip: false,
+  },
+  {
+    id: 'salmon_brioche',
+    name: 'Glazed Salmon Brioche',
+    shortName: 'Salmon Melt',
+    ingredients: ['baked_bun', 'seared_salmon', 'chopped_tomato'],
+    reward: 195,
+    patience: 50,
+    isVip: false,
+  },
+  {
     id: 'surf_turf',
     name: 'VIP Surf & Turf',
     shortName: 'VIP Surf & Turf',
@@ -102,9 +120,19 @@ export const RECIPES = [
     patience: 60,
     isVip: true,
   },
+  {
+    id: 'royal_tasting',
+    name: 'VIP Berry Glaze Wagyu',
+    shortName: 'VIP Royal Wagyu',
+    ingredients: ['seared_steak', 'chopped_berry', 'saffron_broth'],
+    reward: 340,
+    patience: 60,
+    isVip: true,
+  },
 ];
 
 export const MENU_CARDS = RECIPES.filter((r) => !r.isVip);
+export const VIP_RECIPE_IDS = RECIPES.filter((r) => r.isVip).map((r) => r.id);
 export const RECIPE_BY_ID = Object.fromEntries(RECIPES.map((r) => [r.id, r]));
 
 export function isReadyIngredient(itemId) {

@@ -4,6 +4,7 @@ import {
   CANVAS_WIDTH,
   COMBO_WINDOW,
   HUD_HEIGHT,
+  KITCHEN_UPGRADES,
   RAIL_HEIGHT,
   RAIL_TOP,
 } from './config.js';
@@ -22,7 +23,6 @@ export function renderHudAndOrderRail(ctx, world) {
   ctx.fillStyle = '#d87a32';
   ctx.fillRect(0, HUD_HEIGHT - 2, CANVAS_WIDTH, 2);
 
-  /* Brand & Shift Pill */
   ctx.fillStyle = '#f4b942';
   ctx.font = '900 20px "Trebuchet MS", "Segoe UI", sans-serif';
   ctx.textAlign = 'left';
@@ -40,7 +40,6 @@ export function renderHudAndOrderRail(ctx, world) {
   ctx.textAlign = 'center';
   ctx.fillText(world.orders.shift.name, 309, 28);
 
-  /* High-Contrast Timer Box with Clock Dial Glyph */
   const urgent = world.timeRemaining <= 20;
   traceRoundedRect(ctx, 424, 7, 168, 40, 10);
   ctx.fillStyle = urgent ? '#7a1f19' : '#2a221c';
@@ -59,7 +58,6 @@ export function renderHudAndOrderRail(ctx, world) {
   ctx.font = '900 24px "Consolas", "Courier New", monospace';
   ctx.fillText(formatClock(world.timeRemaining), 469, 36);
 
-  /* Score Box */
   traceRoundedRect(ctx, 604, 7, 150, 40, 10);
   ctx.fillStyle = 'rgba(46, 166, 111, 0.22)';
   ctx.fill();
@@ -73,7 +71,6 @@ export function renderHudAndOrderRail(ctx, world) {
   ctx.font = '900 22px "Trebuchet MS", "Segoe UI", sans-serif';
   ctx.fillText(`$${world.orders.score}`, 618, 36);
 
-  /* Combo Box */
   const comboActive = world.orders.combo > 1 && world.orders.comboTimer > 0;
   traceRoundedRect(ctx, 766, 7, 168, 40, 10);
   ctx.fillStyle = comboActive ? 'rgba(244, 185, 66, 0.28)' : 'rgba(255, 255, 255, 0.06)';
@@ -95,7 +92,7 @@ export function renderHudAndOrderRail(ctx, world) {
     ctx.fill();
   }
 
-  /* Stainless Steel Order Rail */
+  /* Stainless Order Rail */
   const railGrad = ctx.createLinearGradient(0, RAIL_TOP, 0, RAIL_TOP + RAIL_HEIGHT);
   railGrad.addColorStop(0, '#363b42');
   railGrad.addColorStop(0.5, '#292d34');
@@ -129,7 +126,6 @@ export function renderHudAndOrderRail(ctx, world) {
     const barColor = pct > 0.5 ? '#2d8a5b' : pct > 0.25 ? '#d97e24' : '#c9382e';
     const headerColor = order.isVip ? '#d4911a' : barColor;
 
-    /* Silver metallic rail clip */
     ctx.fillStyle = '#d3dce6';
     ctx.strokeStyle = '#535d69';
     ctx.lineWidth = 1.2;
@@ -137,12 +133,10 @@ export function renderHudAndOrderRail(ctx, world) {
     ctx.fill();
     ctx.stroke();
 
-    /* Ticket shadow */
     ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
     traceRoundedRect(ctx, tx + 2, ty + 4, ticketW, ticketH, 8);
     ctx.fill();
 
-    /* Warm cream parchment ticket body */
     const paperGrad = ctx.createLinearGradient(tx, ty, tx, ty + ticketH);
     paperGrad.addColorStop(0, order.isVip ? '#fff9e6' : '#fff7e6');
     paperGrad.addColorStop(1, order.isVip ? '#f9e3ad' : '#f2e2c2');
@@ -153,7 +147,6 @@ export function renderHudAndOrderRail(ctx, world) {
     ctx.lineWidth = order.isVip || pct < 0.25 ? 2.4 : 1.6;
     ctx.stroke();
 
-    /* Bold colored ticket header */
     traceRoundedRect(ctx, tx + 1, ty + 1, ticketW - 2, 25, 7);
     ctx.fillStyle = headerColor;
     ctx.fill();
@@ -162,9 +155,10 @@ export function renderHudAndOrderRail(ctx, world) {
     if (order.isVip) {
       drawCrownGlyph(ctx, tx + 13, ty + 14);
       ctx.fillStyle = '#1f1204';
-      ctx.font = '900 12px "Trebuchet MS", "Segoe UI", sans-serif';
+      ctx.font = '900 11.5px "Trebuchet MS", "Segoe UI", sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(`VIP #${order.id} SURF & TURF`, tx + 24, ty + 14);
+      const vipLabel = recipe.shortName.replace(/^VIP\s+/i, '').toUpperCase();
+      ctx.fillText(`VIP #${order.id} ${vipLabel}`, tx + 24, ty + 14);
       ctx.textAlign = 'right';
       ctx.fillStyle = '#291702';
       ctx.fillText(`+$${recipe.reward}`, tx + ticketW - 8, ty + 14);
@@ -178,10 +172,8 @@ export function renderHudAndOrderRail(ctx, world) {
       ctx.fillText(`+$${recipe.reward}`, tx + ticketW - 8, ty + 14);
     }
 
-    /* Plated dish illustration on left */
-    renderPlatedDish(ctx, recipe.id, tx + 35, ty + 55, 0.82, false);
+    renderPlatedDish(ctx, recipe.id, tx + 35, ty + 55, 0.8, false);
 
-    /* 3 Ingredient steps on right */
     recipe.ingredients.forEach((ingId, stepIdx) => {
       const ix = tx + 88 + stepIdx * 46;
       const iy = ty + 54;
@@ -209,7 +201,6 @@ export function renderHudAndOrderRail(ctx, world) {
       }
     });
 
-    /* Patience Bar */
     traceRoundedRect(ctx, tx + 8, ty + ticketH - 15, ticketW - 50, 8, 4);
     ctx.fillStyle = '#d7c4a1';
     ctx.fill();
@@ -230,28 +221,41 @@ export function renderHudAndOrderRail(ctx, world) {
     ctx.fillText('Ticket Rail Clear — New Orders Incoming!', CANVAS_WIDTH / 2, RAIL_TOP + 58);
   }
 
-  /* Bottom Bar */
+  /* Bottom Bar with Active Chef Brigade Pill */
   ctx.fillStyle = '#171210';
   ctx.fillRect(0, BOTTOM_BAR_Y, CANVAS_WIDTH, CANVAS_HEIGHT - BOTTOM_BAR_Y);
   ctx.fillStyle = 'rgba(216, 122, 50, 0.45)';
   ctx.fillRect(0, BOTTOM_BAR_Y, CANVAS_WIDTH, 2);
 
-  const heldLabel = world.chef.holding
-    ? `CARRYING: ${describeItemLabel(world.chef.holding).toUpperCase()}`
-    : 'HANDS FREE — GRAB INGREDIENTS OR CLICK STATIONS';
-  ctx.fillStyle = world.chef.holding ? '#f4b942' : '#d2c2aa';
-  ctx.font = '800 13px "Trebuchet MS", "Segoe UI", sans-serif';
-  ctx.textAlign = 'left';
+  const activeChef = (world.chefs && world.chefs[world.activeChefIdx || 0]) || world.chef;
+  const isHana = activeChef.id === 'hana';
+  traceRoundedRect(ctx, 16, BOTTOM_BAR_Y + 8, 178, 26, 13);
+  ctx.fillStyle = isHana ? '#204e59' : '#57311a';
+  ctx.fill();
+  ctx.strokeStyle = '#f4b942';
+  ctx.lineWidth = 1.4;
+  ctx.stroke();
+  ctx.fillStyle = '#fff5d6';
+  ctx.font = '900 11.5px "Trebuchet MS", sans-serif';
+  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(heldLabel, 20, BOTTOM_BAR_Y + 22);
+  ctx.fillText(`ACTIVE: ${activeChef.name} [TAB]`, 105, BOTTOM_BAR_Y + 21);
+
+  const heldLabel = activeChef.holding
+    ? `CARRYING: ${describeItemLabel(activeChef.holding).toUpperCase()}`
+    : 'HANDS FREE — GRAB OR CLICK STATIONS';
+  ctx.fillStyle = activeChef.holding ? '#f4b942' : '#d2c2aa';
+  ctx.font = '800 12.5px "Trebuchet MS", "Segoe UI", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(heldLabel, 210, BOTTOM_BAR_Y + 21);
 
   ctx.fillStyle = '#b9a892';
-  ctx.font = '700 12px "Trebuchet MS", "Segoe UI", sans-serif';
+  ctx.font = '700 11.5px "Trebuchet MS", "Segoe UI", sans-serif';
   ctx.textAlign = 'right';
   ctx.fillText(
-    'WASD / Arrows: Move  •  Space / E: Interact  •  Q / Shift: Dash  •  Click Any Station to Auto-Route',
-    CANVAS_WIDTH - 20,
-    BOTTOM_BAR_Y + 22,
+    'WASD: Move  •  Space/E: Act  •  Tab: Switch Chef  •  Q: Dash  •  Click Station',
+    CANVAS_WIDTH - 18,
+    BOTTOM_BAR_Y + 21,
   );
 }
 
@@ -272,23 +276,27 @@ export function populateDomOverlays() {
     const dot = document.createElement('canvas');
     dot.width = 64;
     dot.height = 64;
-    dot.style.width = '38px';
-    dot.style.height = '38px';
+    dot.style.width = '40px';
+    dot.style.height = '40px';
     renderPlatedDish(dot.getContext('2d'), recipe.id, 32, 32, 0.78, false);
+
+    const info = document.createElement('div');
+    info.className = 'dish-info';
 
     const nameEl = document.createElement('div');
     nameEl.className = 'dish-name';
-    nameEl.textContent = recipe.shortName;
-
-    const priceEl = document.createElement('div');
-    priceEl.className = 'dish-price';
-    priceEl.textContent = `$${recipe.reward}`;
+    nameEl.textContent = `${recipe.shortName} · `;
+    const priceSpan = document.createElement('span');
+    priceSpan.className = 'dish-price';
+    priceSpan.textContent = `$${recipe.reward}`;
+    nameEl.appendChild(priceSpan);
 
     const stepsEl = document.createElement('div');
     stepsEl.className = 'dish-steps';
     stepsEl.textContent = stepNames.join(' + ');
 
-    card.append(dot, nameEl, priceEl, stepsEl);
+    info.append(nameEl, stepsEl);
+    card.append(dot, info);
     strip.appendChild(card);
   }
 
@@ -300,8 +308,8 @@ export function populateDomOverlays() {
     const gCanvas = document.createElement('canvas');
     gCanvas.width = 64;
     gCanvas.height = 64;
-    gCanvas.style.width = '40px';
-    gCanvas.style.height = '40px';
+    gCanvas.style.width = '36px';
+    gCanvas.style.height = '36px';
     renderPlatedDish(gCanvas.getContext('2d'), recipe.id, 32, 32, 0.78, Boolean(recipe.isVip));
 
     const gText = document.createElement('div');
@@ -321,7 +329,7 @@ export function populateDomOverlays() {
   }
 }
 
-export function showClearScreen(world) {
+export function showClearScreen(world, sessionBank = 0, ownedUpgrades = new Set(), onBuyUpgrade = null) {
   const clearEl = document.getElementById('clear-overlay');
   if (!clearEl) return;
 
@@ -331,7 +339,7 @@ export function showClearScreen(world) {
   document.getElementById('clear-score').textContent = `$${world.orders.score}`;
   document.getElementById('clear-served').textContent = String(world.orders.servedCount);
   document.getElementById('clear-combo').textContent = `x${world.orders.maxCombo}`;
-  document.getElementById('clear-missed').textContent = String(world.orders.missedCount);
+  document.getElementById('clear-bank').textContent = `$${sessionBank}`;
 
   const breakdownEl = document.getElementById('clear-breakdown');
   breakdownEl.innerHTML = '';
@@ -345,8 +353,44 @@ export function showClearScreen(world) {
     for (const [recipeId, count] of entries) {
       const chip = document.createElement('span');
       chip.className = 'breakdown-chip';
-      chip.textContent = `${count}x ${RECIPE_BY_ID[recipeId]?.shortName || recipeId}`;
+      const mini = document.createElement('canvas');
+      mini.width = 28;
+      mini.height = 28;
+      mini.style.width = '18px';
+      mini.style.height = '18px';
+      renderPlatedDish(mini.getContext('2d'), recipeId, 14, 14, 0.36, false);
+      const txt = document.createElement('span');
+      txt.textContent = `${count}x ${RECIPE_BY_ID[recipeId]?.shortName || recipeId}`;
+      chip.append(mini, txt);
       breakdownEl.appendChild(chip);
+    }
+  }
+
+  const shopEl = document.getElementById('upgrade-shop');
+  if (shopEl) {
+    shopEl.innerHTML = '';
+    for (const upg of KITCHEN_UPGRADES) {
+      const owned = ownedUpgrades.has(upg.id);
+      const card = document.createElement('div');
+      card.className = `upgrade-card${owned ? ' owned' : ''}`;
+
+      const title = document.createElement('strong');
+      title.textContent = upg.name;
+      const desc = document.createElement('span');
+      desc.textContent = upg.desc;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `upgrade-btn${owned ? ' owned' : ''}`;
+      btn.dataset.upgradeId = upg.id;
+      btn.textContent = owned ? 'OWNED ✓' : `BUY $${upg.cost}`;
+      btn.disabled = owned || sessionBank < upg.cost;
+      if (!owned && onBuyUpgrade) {
+        btn.addEventListener('click', () => onBuyUpgrade(upg.id));
+      }
+
+      card.append(title, desc, btn);
+      shopEl.appendChild(card);
     }
   }
 

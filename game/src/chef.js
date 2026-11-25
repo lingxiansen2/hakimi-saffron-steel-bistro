@@ -11,9 +11,11 @@ import {
 } from './config.js';
 import { isWalkable, pxToTile, tileCenterPx } from './kitchen.js';
 
-export function createChefState(col = 5, row = 3) {
+export function createChefState(col = 5, row = 3, id = 'ren') {
   const pos = tileCenterPx(col, row);
   return {
+    id,
+    name: id === 'hana' ? 'HANA' : 'REN',
     x: pos.x,
     y: pos.y,
     vx: 0,
@@ -37,7 +39,7 @@ export function triggerChefDash(chef) {
   return true;
 }
 
-export function stepChefMovement(chef, kitchen, inputVec, dt, onArriveStation) {
+export function stepChefMovement(chef, kitchen, inputVec, dt, onArriveStation, speedMult = 1.0) {
   if (chef.dashCooldown > 0) chef.dashCooldown = Math.max(0, chef.dashCooldown - dt);
   if (chef.dashTime > 0) {
     chef.dashTime = Math.max(0, chef.dashTime - dt);
@@ -91,7 +93,8 @@ export function stepChefMovement(chef, kitchen, inputVec, dt, onArriveStation) {
     const ny = moveY / len;
     chef.facingX = nx;
     chef.facingY = ny;
-    const speed = chef.dashTime > 0 ? CHEF_DASH_SPEED : CHEF_SPEED;
+    const baseSpeed = chef.dashTime > 0 ? CHEF_DASH_SPEED : CHEF_SPEED;
+    const speed = baseSpeed * speedMult;
     const stepX = nx * speed * dt;
     const stepY = ny * speed * dt;
 

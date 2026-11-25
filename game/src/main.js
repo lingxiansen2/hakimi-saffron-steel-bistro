@@ -1,6 +1,7 @@
+import { preloadBistroAssets } from './assets.js';
 import { BistroSoundEngine } from './audio.js';
 import { createChefState, stepChefMovement, triggerChefDash } from './chef.js';
-import { CANVAS_HEIGHT, CANVAS_WIDTH, SHIFTS } from './config.js';
+import { BOTTOM_BAR_Y, CANVAS_HEIGHT, CANVAS_WIDTH, KITCHEN_UPGRADES, SHIFTS } from './config.js';
 import {
   buildKitchenGrid,
   findBestAdjacentApproach,
@@ -25,26 +26,37 @@ const audio = new BistroSoundEngine();
 
 let selectedShiftIndex = 1;
 let world = null;
+let sessionBank = 0;
+const ownedUpgrades = new Set();
 const keysDown = new Set();
 
 export function createGameWorld(shiftIndex = selectedShiftIndex) {
   const kitchen = buildKitchenGrid();
-  const orders = new OrderTicketQueue(shiftIndex);
+  const patienceBoost = ownedUpgrades.has('heat_lamps') ? 1.25 : 1.0;
+  const orders = new OrderTicketQueue(shiftIndex, patienceBoost);
   orders.seedInitialOrders(Math.min(3, orders.shift.maxOrders));
-  const chef = createChefState(5, 3);
+  const chefs = [createChefState(6, 1, 'ren'), createChefState(4, 3, 'hana')];
   const particles = new KitchenParticleEngine();
 
-  return {
+  const state = {
     mode: 'title',
     shiftIndex,
     kitchen,
     orders,
-    chef,
+    chefs,
+    activeChefIdx: 0,
     particles,
     timeRemaining: orders.shift.duration,
     elapsed: 0,
     hoverTile: null,
   };
+  Object.defineProperty(state, 'chef', {
+    get() {
+      return this.chefs[this.activeChefIdx];
+    },
+    enumerable: true,
+  });
+  return state;
 }
 
 export function stepGameWorld(dt, freezeOrdersAndClock = false) {
@@ -53,22 +65,38 @@ export function stepGameWorld(dt, freezeOrdersAndClock = false) {
 
   if (world.mode === 'playing') {
     const events = [];
+    const modifiers = {
+      chopSpeedMult: ownedUpgrades.has('sharp_knives') ? 1.35 : 1.0,
+      cookSpeedMult: ownedUpgrades.has('copper_burners') ? 1.25 : 1.0,
+    };
     if (!freezeOrdersAndClock) {
       const vec = readMovementInputVector();
-      stepChefMovement(world.chef, world.kitchen, vec, dt, (arrivedStation) => {
-        const arriveEvents = [];
-        interactWithStation(world.kitchen, world.chef, arrivedStation, world.orders, arriveEvents);
-        handleKitchenEvents(arriveEvents);
+      const speedMult = ownedUpgrades.has('speed_boots') ? 1.2 : 1.0;
+      world.chefs.forEach((chef, idx) => {
+        const moveVec = idx === world.activeChefIdx ? vec : { x: 0, y: 0 };
+        stepChefMovement(
+          chef,
+          world.kitchen,
+          moveVec,
+          dt,
+          (arrivedStation) => {
+            const arriveEvents = [];
+            interactWithStation(world.kitchen, chef, arrivedStation, world.orders, arriveEvents);
+            handleKitchenEvents(arriveEvents);
+          },
+          speedMult,
+        );
       });
-      stepKitchenStations(world.kitchen, world.chef, dt, events);
+      stepKitchenStations(world.kitchen, world.chefs, dt, events, modifiers);
       world.orders.step(dt, events);
       world.timeRemaining = Math.max(0, world.timeRemaining - dt);
       if (world.timeRemaining <= 0) {
         world.mode = 'clear';
-        showClearScreen(world);
+        sessionBank += world.orders.score;
+        openClearOverlay();
       }
     } else {
-      stepKitchenStations(world.kitchen, world.chef, dt * 0.25, events);
+      stepKitchenStations(world.kitchen, world.chefs, dt * 0.25, events, modifiers);
     }
     handleKitchenEvents(events);
   }
@@ -76,7 +104,8 @@ export function stepGameWorld(dt, freezeOrdersAndClock = false) {
   world.particles.step(dt);
 }
 
-export function bootBistroGame() {
+export async function bootBistroGame() {
+  await preloadBistroAssets();
   populateDomOverlays();
   world = createGameWorld(selectedShiftIndex);
   bindInputListeners();
@@ -91,11 +120,22 @@ export function bootBistroGame() {
       getWorld: () => world,
       showTitle: showTitleOverlay,
       hideOverlays: hideAllOverlays,
-      showClear: () => showClearScreen(world),
+      showClear: (bankOverride, upgOverride) => {
+        if (typeof bankOverride === 'number') sessionBank = bankOverride;
+        if (upgOverride) {
+          ownedUpgrades.clear();
+          for (const id of upgOverride) ownedUpgrades.add(id);
+        }
+        openClearOverlay();
+      },
     });
     renderFrame();
+    if (typeof window !== 'undefined') window.__BISTRO_READY__ = true;
     return;
   }
+
+  renderFrame();
+  if (typeof window !== 'undefined') window.__BISTRO_READY__ = true;
 
   let lastTs = performance.now();
   const loop = (now) => {
@@ -106,6 +146,27 @@ export function bootBistroGame() {
     requestAnimationFrame(loop);
   };
   requestAnimationFrame(loop);
+}
+
+function openClearOverlay() {
+  showClearScreen(world, sessionBank, ownedUpgrades, (upgId) => {
+    const upg = KITCHEN_UPGRADES.find((u) => u.id === upgId);
+    if (!upg || ownedUpgrades.has(upgId) || sessionBank < upg.cost) return;
+    sessionBank -= upg.cost;
+    ownedUpgrades.add(upgId);
+    audio.playPlateReady();
+    openClearOverlay();
+  });
+}
+
+function switchActiveChef(nextIdx) {
+  if (!world || !world.chefs || world.chefs.length < 2) return;
+  const resolved = typeof nextIdx === 'number' ? nextIdx % world.chefs.length : (world.activeChefIdx + 1) % world.chefs.length;
+  if (resolved === world.activeChefIdx) return;
+  world.activeChefIdx = resolved;
+  const chef = world.chef;
+  audio.playPickup();
+  world.particles.addScorePopup(chef.x, chef.y - 42, `${chef.name}!`, '#ffe388', 0.88);
 }
 
 function handleKitchenEvents(events) {
@@ -136,6 +197,11 @@ function handleKitchenEvents(events) {
         audio.playSearReady();
         world.particles.emitBurst(pos.x, pos.y - 10, '#f4b942', 10, 75);
         world.particles.addScorePopup(pos.x, pos.y - 28, 'SEARED!', '#f7d358', 0.95);
+        break;
+      case 'perfect_sear':
+        audio.playPlateReady();
+        world.particles.emitBurst(pos.x, pos.y - 10, '#ffe47a', 12, 95);
+        world.particles.addScorePopup(pos.x, pos.y - 34, `PERFECT SEAR! +$${ev.bonus}`, '#ffe47a', 0.95);
         break;
       case 'simmer_ready':
         audio.playSimmerReady();
@@ -252,6 +318,23 @@ function handleCanvasClick(ev) {
   if (!world || world.mode !== 'playing') return;
   audio.ensureContext();
   const pt = canvasPointFromEvent(ev);
+
+  /* Click bottom-bar Brigade pill to switch Ren <-> Hana */
+  if (pt.y >= BOTTOM_BAR_Y && pt.x <= 200) {
+    switchActiveChef();
+    return;
+  }
+
+  /* Click directly on inactive chef to switch control to them */
+  for (let i = 0; i < world.chefs.length; i++) {
+    if (i === world.activeChefIdx) continue;
+    const c = world.chefs[i];
+    if (Math.hypot(pt.x - c.x, pt.y - (c.y - 10)) <= 28) {
+      switchActiveChef(i);
+      return;
+    }
+  }
+
   const target = pxToTile(pt.x, pt.y);
   const cur = pxToTile(world.chef.x, world.chef.y);
 
@@ -307,13 +390,19 @@ function startShift(shiftIdx) {
 
 function bindInputListeners() {
   window.addEventListener('keydown', (ev) => {
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(ev.code)) {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'Tab'].includes(ev.code)) {
       ev.preventDefault();
     }
     keysDown.add(ev.code);
 
     if (ev.repeat) return;
-    if (ev.code === 'Space' || ev.code === 'KeyE') {
+    if (ev.code === 'Tab') {
+      if (world.mode === 'playing') switchActiveChef();
+    } else if (ev.code === 'Digit1') {
+      if (world.mode === 'playing') switchActiveChef(0);
+    } else if (ev.code === 'Digit2') {
+      if (world.mode === 'playing') switchActiveChef(1);
+    } else if (ev.code === 'Space' || ev.code === 'KeyE') {
       if (world.mode === 'title') {
         startShift(selectedShiftIndex);
       } else if (world.mode === 'playing') {

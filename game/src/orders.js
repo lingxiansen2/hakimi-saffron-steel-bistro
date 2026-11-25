@@ -1,9 +1,10 @@
 import { COMBO_WINDOW, SHIFTS } from './config.js';
-import { RECIPE_BY_ID } from './recipes.js';
+import { RECIPE_BY_ID, VIP_RECIPE_IDS } from './recipes.js';
 
 export class OrderTicketQueue {
-  constructor(shiftIndex = 1) {
+  constructor(shiftIndex = 1, patienceBoost = 1.0) {
     this.shift = SHIFTS[shiftIndex] || SHIFTS[1];
+    this.patienceBoost = patienceBoost;
     this.orders = [];
     this.nextId = 1;
     this.spawnCooldown = 1.0;
@@ -34,7 +35,7 @@ export class OrderTicketQueue {
     const hasVip = this.orders.some((o) => RECIPE_BY_ID[o.recipeId]?.isVip);
     let recipeId;
     if (!hasVip && this.orders.length >= 2 && this.nextRand() < this.shift.vipChance) {
-      recipeId = 'surf_turf';
+      recipeId = VIP_RECIPE_IDS[Math.floor(this.nextRand() * VIP_RECIPE_IDS.length)];
     } else {
       const pool = this.shift.allowedRecipes;
       const recentIds = this.orders.slice(-2).map((o) => o.recipeId);
@@ -44,7 +45,7 @@ export class OrderTicketQueue {
     }
 
     const recipe = RECIPE_BY_ID[recipeId];
-    const totalPatience = Math.round(recipe.patience * this.shift.patienceScale);
+    const totalPatience = Math.round(recipe.patience * this.shift.patienceScale * this.patienceBoost);
     const ticket = {
       id: this.nextId++,
       recipeId,

@@ -37,11 +37,10 @@ export function applyDeterministicShot(shotName, controller) {
     world.timeRemaining = 78;
     world.elapsed = 14.2;
 
-    /* 4 vivid tickets including 1 Golden VIP Critic Ticket */
     world.orders.orders = [
       { id: 4, recipeId: 'burger', totalPatience: 50, remaining: 36, isVip: false, flash: 0 },
       { id: 5, recipeId: 'wagyu', totalPatience: 52, remaining: 29, isVip: false, flash: 0 },
-      { id: 6, recipeId: 'salmon_ramen', totalPatience: 56, remaining: 42, isVip: false, flash: 0 },
+      { id: 6, recipeId: 'wagyu_ramen', totalPatience: 56, remaining: 42, isVip: false, flash: 0 },
       { id: 7, recipeId: 'surf_turf', totalPatience: 60, remaining: 24, isVip: true, flash: 0 },
     ];
     world.orders.nextId = 8;
@@ -51,18 +50,16 @@ export function applyDeterministicShot(shotName, controller) {
     world.orders.comboTimer = 6.4;
     world.orders.servedCount = 4;
 
-    /* Fresh prepped ingredients resting on counters */
     getStation(world.kitchen, 3, 2).item = { kind: 'ingredient', id: 'chopped_herb' };
     getStation(world.kitchen, 7, 2).item = { kind: 'ingredient', id: 'chopped_tomato' };
 
-    /* Twin Copper Stoves + Simmering Stockpot + Wood-Fired Hearth Oven */
     const stove1 = getStation(world.kitchen, 3, 0);
     stove1.item = 'salmon';
-    stove1.progress = 2.1;
+    stove1.progress = 2.2;
 
     const stove2 = getStation(world.kitchen, 4, 0);
     stove2.item = 'seared_steak';
-    stove2.progress = 4.4;
+    stove2.progress = 4.2;
 
     const pot = getStation(world.kitchen, 5, 0);
     pot.item = 'saffron_broth';
@@ -72,28 +69,33 @@ export function applyDeterministicShot(shotName, controller) {
     oven.item = 'dough';
     oven.progress = 1.9;
 
-    /* Butcher Board 2 actively chopping tomato with Chef standing directly below */
     const board2 = getStation(world.kitchen, 7, 0);
     board2.item = 'tomato';
     board2.progress = 0.58;
 
-    /* Dish mid-assembly on Marble Island A */
     const asmA = getStation(world.kitchen, 4, 2);
     asmA.assemblyItems = ['baked_bun', 'seared_steak'];
     asmA.completedRecipeId = null;
 
-    /* Steaming plated Herb Wagyu glowing under heat lamps at Serve Pass beside Ring Bell */
     const pass = getStation(world.kitchen, 10, 2);
     pass.item = { kind: 'plate', recipeId: 'wagyu' };
 
-    const chefSpot = tileCenterPx(7, 1);
-    world.chef.x = chefSpot.x;
-    world.chef.y = chefSpot.y + 9;
-    world.chef.facingX = 0;
-    world.chef.facingY = -1;
-    world.chef.holding = null;
+    /* Dual-Chef Brigade: Ren active at Board 2, Hana carrying Cut Greens toward Assemble A */
+    world.activeChefIdx = 0;
+    const renSpot = tileCenterPx(7, 1);
+    world.chefs[0].x = renSpot.x;
+    world.chefs[0].y = renSpot.y + 4;
+    world.chefs[0].facingX = 0;
+    world.chefs[0].facingY = -1;
+    world.chefs[0].holding = null;
 
-    /* Trigger genuine steam curls, sizzle sparks, slice confetti & score popup */
+    const hanaSpot = tileCenterPx(2, 3);
+    world.chefs[1].x = hanaSpot.x;
+    world.chefs[1].y = hanaSpot.y;
+    world.chefs[1].facingX = 1;
+    world.chefs[1].facingY = 0;
+    world.chefs[1].holding = { kind: 'ingredient', id: 'chopped_greens' };
+
     const passPos = tileCenterPx(10, 2);
     world.particles.emitSteamCurl(passPos.x, passPos.y - 6, true);
     world.particles.emitSteamCurl(passPos.x + 6, passPos.y - 10, false);
@@ -121,16 +123,16 @@ export function applyDeterministicShot(shotName, controller) {
     world.elapsed = 28.4;
 
     world.orders.orders = [
-      { id: 9, recipeId: 'surf_turf', totalPatience: 54, remaining: 16, isVip: true, flash: 0 },
-      { id: 10, recipeId: 'salmon_ramen', totalPatience: 50, remaining: 28, isVip: false, flash: 0 },
+      { id: 9, recipeId: 'royal_tasting', totalPatience: 54, remaining: 18, isVip: true, flash: 0 },
+      { id: 10, recipeId: 'salmon_brioche', totalPatience: 45, remaining: 28, isVip: false, flash: 0 },
       { id: 11, recipeId: 'berry_tart', totalPatience: 42, remaining: 31, isVip: false, flash: 0 },
-      { id: 12, recipeId: 'burger', totalPatience: 45, remaining: 37, isVip: false, flash: 0 },
+      { id: 12, recipeId: 'wagyu_ramen', totalPatience: 50, remaining: 37, isVip: false, flash: 0 },
     ];
-    world.orders.score = 1120;
+    world.orders.score = 1290;
     world.orders.combo = 4;
     world.orders.maxCombo = 4;
     world.orders.comboTimer = 7.6;
-    world.orders.servedCount = 6;
+    world.orders.servedCount = 7;
 
     const s1 = getStation(world.kitchen, 3, 0);
     s1.item = 'seared_steak';
@@ -156,15 +158,23 @@ export function applyDeterministicShot(shotName, controller) {
     getStation(world.kitchen, 4, 2).assemblyItems = ['baked_bun', 'chopped_berry'];
     getStation(world.kitchen, 7, 2).item = { kind: 'ingredient', id: 'chopped_greens' };
 
-    const chefPos = tileCenterPx(8, 2);
-    world.chef.x = chefPos.x;
-    world.chef.y = chefPos.y;
-    world.chef.facingX = 1;
-    world.chef.facingY = 0;
-    world.chef.holding = { kind: 'plate', recipeId: 'surf_turf' };
+    world.activeChefIdx = 0;
+    const renPos = tileCenterPx(8, 2);
+    world.chefs[0].x = renPos.x;
+    world.chefs[0].y = renPos.y;
+    world.chefs[0].facingX = 1;
+    world.chefs[0].facingY = 0;
+    world.chefs[0].holding = { kind: 'plate', recipeId: 'royal_tasting' };
+
+    const hanaPos = tileCenterPx(3, 4);
+    world.chefs[1].x = hanaPos.x;
+    world.chefs[1].y = hanaPos.y;
+    world.chefs[1].facingX = 0;
+    world.chefs[1].facingY = 1;
+    world.chefs[1].holding = null;
 
     const popupPos = tileCenterPx(8, 4);
-    world.particles.addScorePopup(popupPos.x, popupPos.y - 24, '+$320  VIP x4!', '#f4b942', 1.2);
+    world.particles.addScorePopup(popupPos.x, popupPos.y - 24, '+$340  VIP x4!', '#f4b942', 1.2);
     const s1Pos = tileCenterPx(3, 0);
     world.particles.emitSteamCurl(s1Pos.x, s1Pos.y - 10, true);
     world.particles.emitSteamCurl(s1Pos.x + 102, s1Pos.y - 10, false);
@@ -181,18 +191,19 @@ export function applyDeterministicShot(shotName, controller) {
     const world = getWorld();
     world.mode = 'clear';
     world.timeRemaining = 0;
-    world.orders.score = 1460;
-    world.orders.servedCount = 8;
-    world.orders.maxCombo = 4;
+    world.orders.score = 1840;
+    world.orders.servedCount = 10;
+    world.orders.maxCombo = 5;
     world.orders.missedCount = 0;
     world.orders.dishBreakdown = {
       burger: 2,
       wagyu: 2,
-      salmon_ramen: 1,
-      berry_tart: 2,
-      surf_turf: 1,
+      wagyu_ramen: 2,
+      salmon_brioche: 2,
+      berry_tart: 1,
+      royal_tasting: 1,
     };
     world.orders.orders = [];
-    showClear();
+    showClear(1520, new Set(['sharp_knives']));
   }
 }

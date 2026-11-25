@@ -8,8 +8,6 @@
 :root {
   --bg-deep: #14100f;
   --espresso: #1e1816;
-  --walnut: #34251e;
-  --oak: #8c5a37;
   --copper: #d87a32;
   --saffron: #f4b942;
   --cream: #fbf4e6;
@@ -67,7 +65,7 @@ body {
   padding: 7px 12px;
   border-radius: 999px;
   cursor: pointer;
-  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+  transition: transform 0.12s ease, background 0.12s ease;
 }
 
 .pill-btn:hover {
@@ -84,7 +82,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 20;
-  padding: 20px;
+  padding: 14px;
 }
 
 .title-backdrop {
@@ -96,221 +94,155 @@ body {
 }
 
 .bistro-card {
-  background: linear-gradient(165deg, rgba(35, 27, 24, 0.94) 0%, rgba(22, 17, 15, 0.96) 100%);
+  background: linear-gradient(165deg, rgba(35, 27, 24, 0.95) 0%, rgba(22, 17, 15, 0.97) 100%);
   border: 2px solid rgba(244, 185, 66, 0.65);
   border-radius: 18px;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.78), inset 0 1px 0 rgba(255, 244, 220, 0.16);
   color: var(--cream);
-  padding: 22px 28px;
+  padding: 18px 24px;
   text-align: center;
 }
 
 .title-card {
   width: min(860px, 92%);
-  background: linear-gradient(170deg, rgba(252, 244, 228, 0.96) 0%, rgba(239, 223, 194, 0.97) 100%);
+  padding: 14px 22px;
+  background: linear-gradient(170deg, rgba(252, 244, 228, 0.97) 0%, rgba(239, 223, 194, 0.98) 100%);
   border: 3px solid #c97d2d;
   box-shadow: 0 22px 58px rgba(0, 0, 0, 0.65), inset 0 0 0 2px rgba(244, 185, 66, 0.45);
   color: #2b1d14;
 }
 
-.title-card .crest-badge {
+.title-banner {
+  width: 100%;
+  height: 104px;
+  object-fit: cover;
+  border-radius: 11px;
+  border: 2px solid #c97d2d;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.crest-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.crest-badge {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  padding: 3px 10px;
+  border-radius: 999px;
   background: rgba(83, 47, 25, 0.1);
   border: 1px solid rgba(83, 47, 25, 0.25);
   color: #532f19;
 }
 
-.title-card .crest-gold {
+.crest-gold {
   background: rgba(216, 122, 50, 0.2);
   border-color: #c97d2d;
   color: #8a4309;
 }
 
 .title-card h1 {
-  background: none;
-  -webkit-background-clip: border-box;
-  background-clip: border-box;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  line-height: 1.05;
   color: #361e10;
   text-shadow: 0 2px 0 rgba(244, 185, 66, 0.55);
 }
 
-.title-card .subtitle {
-  color: #a85315;
-}
-
-.title-card .tagline {
-  color: #4b3425;
-}
-
-.title-card .recipe-mini {
-  background: rgba(255, 255, 255, 0.65);
-  border: 1.5px solid #cfa974;
-}
-
-.title-card .recipe-mini .dish-name {
-  color: #2c1c12;
-}
-
-.title-card .recipe-mini .dish-price {
-  color: #1c7c4c;
-}
-
-.title-card .recipe-mini .dish-steps {
-  color: #634935;
-}
-
-.title-card .shift-btn {
-  background: rgba(83, 47, 25, 0.08);
-  border-color: #bfa177;
-  color: #2c1c12;
-}
-
-.title-card .shift-btn strong {
-  color: #9e4b10;
-}
-
-.title-card .shift-btn span {
-  color: #5d4331;
-}
-
-.title-card .shift-btn.active,
-.title-card .shift-btn:hover {
-  background: rgba(244, 185, 66, 0.35);
-  border-color: #c8741c;
-}
-
-.title-card .controls-legend {
-  color: #4f3727;
-}
-
-.title-card .controls-legend strong {
-  color: #a84f0f;
-}
-
-.crest-row {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.crest-badge {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1.4px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #e9d9c0;
-}
-
-.crest-gold {
-  background: rgba(244, 185, 66, 0.18);
-  border-color: rgba(244, 185, 66, 0.65);
-  color: var(--saffron);
-}
-
-h1 {
-  font-size: 46px;
-  font-weight: 900;
-  letter-spacing: 3px;
-  line-height: 1.05;
-  background: linear-gradient(180deg, #fff5dc 15%, #f4b942 85%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 2px 12px rgba(244, 185, 66, 0.18);
-}
-
 .subtitle {
-  margin-top: 4px;
-  font-size: 13px;
+  margin-top: 2px;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 2.6px;
-  color: var(--copper);
-}
-
-.tagline {
-  margin: 10px auto 14px;
-  max-width: 680px;
-  font-size: 13.5px;
-  line-height: 1.42;
-  color: #dfd2be;
+  letter-spacing: 2.4px;
+  color: #a85315;
 }
 
 .recipe-strip {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
-  margin-bottom: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  margin: 10px 0 12px;
 }
 
 .recipe-mini {
-  background: rgba(251, 244, 230, 0.07);
-  border: 1px solid rgba(244, 185, 66, 0.28);
-  border-radius: 10px;
-  padding: 8px 6px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1.5px solid #cfa974;
+  border-radius: 9px;
+  padding: 5px 7px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 8px;
+  text-align: left;
+}
+
+.recipe-mini .dish-info {
+  min-width: 0;
+  flex: 1;
 }
 
 .recipe-mini .dish-name {
   font-size: 11px;
-  font-weight: 800;
-  color: var(--cream);
-  line-height: 1.15;
+  font-weight: 900;
+  color: #2c1c12;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .recipe-mini .dish-price {
   font-size: 11px;
-  font-weight: 800;
-  color: #7ee3a8;
+  font-weight: 900;
+  color: #1c7c4c;
 }
 
 .recipe-mini .dish-steps {
-  font-size: 9.5px;
-  color: #cbbaa2;
-  line-height: 1.2;
+  font-size: 9px;
+  color: #634935;
+  line-height: 1.15;
 }
 
 .shift-selector {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 11px;
 }
 
 .shift-btn {
   appearance: none;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: rgba(83, 47, 25, 0.08);
+  border: 1.5px solid #bfa177;
   border-radius: 10px;
-  color: var(--cream);
-  padding: 9px 18px;
+  color: #2c1c12;
+  padding: 7px 16px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 148px;
+  gap: 1px;
+  min-width: 140px;
   transition: all 0.14s ease;
 }
 
 .shift-btn strong {
-  font-size: 14px;
-  color: var(--saffron);
+  font-size: 13px;
+  color: #9e4b10;
 }
 
 .shift-btn span {
-  font-size: 11px;
-  color: #d6c8b2;
+  font-size: 10.5px;
+  color: #5d4331;
 }
 
 .shift-btn.active,
 .shift-btn:hover {
-  background: rgba(244, 185, 66, 0.2);
-  border-color: var(--saffron);
+  background: rgba(244, 185, 66, 0.35);
+  border-color: #c8741c;
   transform: translateY(-1px);
 }
 
@@ -318,20 +250,20 @@ h1 {
   display: flex;
   justify-content: center;
   gap: 14px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .primary-btn {
   appearance: none;
   border: none;
-  border-radius: 12px;
+  border-radius: 11px;
   background: linear-gradient(180deg, #f7c759 0%, #d97c2b 100%);
   color: #1f140e;
-  font: 900 17px/1 'Trebuchet MS', 'Segoe UI', sans-serif;
+  font: 900 16px/1 'Trebuchet MS', 'Segoe UI', sans-serif;
   letter-spacing: 1.4px;
-  padding: 14px 36px;
+  padding: 12px 32px;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(217, 124, 43, 0.45);
+  box-shadow: 0 5px 18px rgba(217, 124, 43, 0.45);
   transition: transform 0.12s ease, filter 0.12s ease;
 }
 
@@ -343,12 +275,12 @@ h1 {
 .secondary-btn {
   appearance: none;
   border: 1.5px solid rgba(244, 185, 66, 0.55);
-  border-radius: 12px;
+  border-radius: 11px;
   background: rgba(255, 255, 255, 0.06);
   color: var(--cream);
-  font: 800 15px/1 'Trebuchet MS', 'Segoe UI', sans-serif;
+  font: 800 14px/1 'Trebuchet MS', 'Segoe UI', sans-serif;
   letter-spacing: 1px;
-  padding: 14px 26px;
+  padding: 12px 24px;
   cursor: pointer;
 }
 
@@ -359,74 +291,76 @@ h1 {
 .controls-legend {
   display: flex;
   justify-content: center;
-  gap: 22px;
-  font-size: 12px;
-  color: #d8cbb8;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 11.5px;
+  color: #4f3727;
 }
 
 .controls-legend strong {
-  color: var(--saffron);
+  color: #a84f0f;
 }
 
 .guide-card {
-  width: min(820px, 92%);
+  width: min(860px, 92%);
   text-align: left;
+  padding: 16px 22px;
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .card-header h2 {
-  font-size: 22px;
+  font-size: 20px;
   color: var(--saffron);
 }
 
 .guide-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 9px;
-  margin-bottom: 12px;
+  gap: 7px;
+  margin-bottom: 10px;
 }
 
 .guide-item {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(244, 185, 66, 0.25);
-  border-radius: 10px;
-  padding: 8px 12px;
+  border-radius: 9px;
+  padding: 6px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .guide-item strong {
   display: block;
-  font-size: 13.5px;
+  font-size: 12.5px;
   color: var(--cream);
 }
 
 .guide-item span {
-  font-size: 11.5px;
+  font-size: 11px;
   color: #cbbba3;
 }
 
 .guide-price {
   font-weight: 900;
   color: #7ee3a8;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .guide-tips {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px 14px;
-  font-size: 12px;
+  gap: 6px 14px;
+  font-size: 11.5px;
   color: #dfd2be;
-  padding-top: 10px;
+  padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
@@ -435,19 +369,20 @@ h1 {
 }
 
 .clear-card {
-  width: min(670px, 88%);
+  width: min(860px, 92%);
+  padding: 16px 24px;
 }
 
 .stars-row {
-  font-size: 40px;
-  letter-spacing: 8px;
+  font-size: 32px;
+  letter-spacing: 7px;
   color: var(--saffron);
-  text-shadow: 0 4px 18px rgba(244, 185, 66, 0.55);
-  margin-bottom: 4px;
+  text-shadow: 0 4px 16px rgba(244, 185, 66, 0.55);
+  margin-bottom: 2px;
 }
 
 .clear-card h2 {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 900;
   letter-spacing: 2px;
   color: var(--cream);
@@ -456,18 +391,18 @@ h1 {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin: 18px 0 16px;
+  gap: 10px;
+  margin: 12px 0;
 }
 
 .stat-box {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(244, 185, 66, 0.3);
-  border-radius: 12px;
-  padding: 12px 8px;
+  border-radius: 10px;
+  padding: 9px 8px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 
 .stat-label {
@@ -478,7 +413,7 @@ h1 {
 }
 
 .stat-val {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 900;
   color: var(--cream);
 }
@@ -487,20 +422,96 @@ h1 {
   color: var(--saffron);
 }
 
+.stat-val.green {
+  color: #7ee3a8;
+}
+
 .breakdown-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 18px;
+  gap: 7px;
+  margin-bottom: 12px;
 }
 
 .breakdown-chip {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
-  padding: 5px 11px;
+  padding: 4px 10px;
   border-radius: 999px;
   background: rgba(46, 166, 111, 0.18);
   border: 1px solid rgba(126, 227, 168, 0.45);
   color: #d8f8e5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shop-heading {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1.8px;
+  color: var(--saffron);
+  margin-bottom: 8px;
+}
+
+.upgrade-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.upgrade-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(244, 185, 66, 0.32);
+  border-radius: 10px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.upgrade-card.owned {
+  border-color: #2ea66f;
+  background: rgba(46, 166, 111, 0.14);
+}
+
+.upgrade-card strong {
+  font-size: 12.5px;
+  color: var(--cream);
+}
+
+.upgrade-card span {
+  font-size: 11px;
+  color: #cbbba3;
+}
+
+.upgrade-btn {
+  appearance: none;
+  border: 1px solid var(--saffron);
+  border-radius: 7px;
+  background: rgba(244, 185, 66, 0.2);
+  color: #ffe7a8;
+  font: 900 11.5px/1 'Trebuchet MS', sans-serif;
+  padding: 7px 8px;
+  cursor: pointer;
+}
+
+.upgrade-btn:hover:not(:disabled) {
+  background: var(--saffron);
+  color: #1c120b;
+}
+
+.upgrade-btn.owned {
+  border-color: #2ea66f;
+  background: #2ea66f;
+  color: #fff;
+  cursor: default;
+}
+
+.upgrade-btn:disabled:not(.owned) {
+  opacity: 0.45;
+  cursor: not-allowed;
 }

@@ -12,8 +12,9 @@ export const GRID_ROWS = 6;
 export const TILE_W = 102;
 export const TILE_H = 78;
 export const COUNTER_BEVEL = 18;
-export const GRID_ORIGIN_X = Math.floor((CANVAS_WIDTH - GRID_COLS * TILE_W) / 2);
+export const GRID_ORIGIN_X = 22;
 export const GRID_ORIGIN_Y = 180;
+export const DINING_STRIP_X = 1150;
 
 export const CHOP_DURATION = 1.25;
 export const SEAR_DURATION = 3.1;
@@ -37,11 +38,11 @@ export const SHIFTS = [
     lighting: 'daylight',
     duration: 95,
     maxOrders: 3,
-    spawnInterval: 9.2,
+    spawnInterval: 9.0,
     patienceScale: 1.18,
-    allowedRecipes: ['burger', 'bruschetta', 'wagyu', 'berry_tart', 'salmon_bowl'],
-    vipChance: 0.12,
-    starTargets: [360, 620, 920],
+    allowedRecipes: ['burger', 'bruschetta', 'wagyu', 'berry_tart', 'salmon_bowl', 'salmon_brioche'],
+    vipChance: 0.15,
+    starTargets: [360, 650, 960],
   },
   {
     id: 1,
@@ -50,11 +51,11 @@ export const SHIFTS = [
     lighting: 'daylight',
     duration: 110,
     maxOrders: 4,
-    spawnInterval: 7.2,
+    spawnInterval: 7.1,
     patienceScale: 1.0,
-    allowedRecipes: ['burger', 'wagyu', 'salmon_bowl', 'bruschetta', 'salmon_ramen', 'berry_tart'],
-    vipChance: 0.24,
-    starTargets: [520, 880, 1280],
+    allowedRecipes: ['burger', 'wagyu', 'salmon_bowl', 'bruschetta', 'salmon_ramen', 'berry_tart', 'wagyu_ramen', 'salmon_brioche'],
+    vipChance: 0.25,
+    starTargets: [540, 920, 1340],
   },
   {
     id: 2,
@@ -63,12 +64,26 @@ export const SHIFTS = [
     lighting: 'lantern',
     duration: 120,
     maxOrders: 5,
-    spawnInterval: 6.1,
+    spawnInterval: 6.0,
     patienceScale: 0.9,
-    allowedRecipes: ['burger', 'wagyu', 'salmon_bowl', 'salmon_ramen', 'berry_tart', 'surf_turf'],
-    vipChance: 0.34,
-    starTargets: [720, 1180, 1680],
+    allowedRecipes: ['burger', 'wagyu', 'salmon_bowl', 'salmon_ramen', 'berry_tart', 'wagyu_ramen', 'salmon_brioche'],
+    vipChance: 0.35,
+    starTargets: [740, 1220, 1740],
   },
+];
+
+export const KITCHEN_UPGRADES = [
+  { id: 'copper_burners', name: 'Copper Burners', desc: '+25% Sear & Bake', cost: 350 },
+  { id: 'sharp_knives', name: 'Damascus Knives', desc: '+35% Chop Speed', cost: 320 },
+  { id: 'speed_boots', name: 'Brigade Boots', desc: '+20% Move Speed', cost: 300 },
+  { id: 'heat_lamps', name: 'Brass Heat Lamps', desc: '+25% Ticket Patience', cost: 400 },
+];
+
+export const DINING_REGULARS = [
+  { id: 'claire', name: 'Claire', hair: '#5a3420', coat: '#3c5a75', skin: '#f5cfa8', isVip: false },
+  { id: 'kenji', name: 'Kenji', hair: '#1d1c24', coat: '#634636', skin: '#eec29b', isVip: false },
+  { id: 'margot', name: 'Margot', hair: '#a44d2a', coat: '#2f6b56', skin: '#f8d7b8', isVip: false },
+  { id: 'critic', name: 'Critic Auguste', hair: '#d8d4ce', coat: '#2a2228', skin: '#f3caa6', isVip: true },
 ];
 
 export const BISTRO_PALETTE = {

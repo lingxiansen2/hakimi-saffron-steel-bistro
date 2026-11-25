@@ -94,16 +94,22 @@ export function buildKitchenGrid() {
   return { cols: GRID_COLS, rows: GRID_ROWS, stations };
 }
 
-export function stepKitchenStations(kitchen, chef, dt, events) {
-  const chefTile = pxToTile(chef.x, chef.y);
+export function stepKitchenStations(kitchen, chefsOrChef, dt, events, modifiers = {}) {
+  const chefs = Array.isArray(chefsOrChef) ? chefsOrChef : [chefsOrChef];
+  const chefTiles = chefs.map((c) => pxToTile(c.x, c.y));
+  const chopMult = modifiers.chopSpeedMult || 1.0;
+  const cookMult = modifiers.cookSpeedMult || 1.0;
+
   for (const st of kitchen.stations.values()) {
     if (st.pulse > 0) st.pulse = Math.max(0, st.pulse - dt * 2.5);
 
     if (st.kind === 'chop' && st.item && canChopItem(st.item)) {
-      const dist = Math.abs(chefTile.col - st.col) + Math.abs(chefTile.row - st.row);
-      if (dist <= 1) {
+      const hasAdjacentChef = chefTiles.some(
+        (t) => Math.abs(t.col - st.col) + Math.abs(t.row - st.row) <= 1,
+      );
+      if (hasAdjacentChef) {
         const prev = st.progress;
-        st.progress += dt / CHOP_DURATION;
+        st.progress += (dt * chopMult) / CHOP_DURATION;
         if (Math.floor(prev * 4) < Math.floor(st.progress * 4)) {
           events.push({ type: 'chop_tick', col: st.col, row: st.row, item: st.item });
         }
@@ -118,10 +124,11 @@ export function stepKitchenStations(kitchen, chef, dt, events) {
 
     if (st.kind === 'stove' && st.item) {
       if (canSearItem(st.item)) {
-        st.progress += dt;
+        st.progress += dt * cookMult;
         if (Math.random() < dt * 5.5) events.push({ type: 'sizzle', col: st.col, row: st.row, hot: false });
         if (st.progress >= SEAR_DURATION) {
           st.item = SEAR_RESULTS[st.item];
+          st.progress = SEAR_DURATION;
           st.pulse = 1;
           events.push({ type: 'sear_ready', col: st.col, row: st.row, item: st.item });
         }
@@ -143,7 +150,7 @@ export function stepKitchenStations(kitchen, chef, dt, events) {
 
     if (st.kind === 'stockpot' && st.item) {
       if (canSimmerItem(st.item)) {
-        st.progress += dt;
+        st.progress += dt * cookMult;
         if (Math.random() < dt * 4.5) events.push({ type: 'sizzle', col: st.col, row: st.row, hot: false });
         if (st.progress >= SIMMER_DURATION) {
           st.item = SIMMER_RESULTS[st.item];
@@ -157,10 +164,11 @@ export function stepKitchenStations(kitchen, chef, dt, events) {
 
     if (st.kind === 'oven' && st.item) {
       if (canBakeItem(st.item)) {
-        st.progress += dt;
+        st.progress += dt * cookMult;
         if (Math.random() < dt * 3.5) events.push({ type: 'sizzle', col: st.col, row: st.row, hot: false });
         if (st.progress >= BAKE_DURATION) {
           st.item = BAKE_RESULTS[st.item];
+          st.progress = BAKE_DURATION;
           st.pulse = 1;
           events.push({ type: 'bake_ready', col: st.col, row: st.row, item: st.item });
         }
@@ -250,11 +258,19 @@ export function interactWithStation(kitchen, chef, station, orders, events) {
       return true;
     }
     if (station.item && !canSearItem(station.item) && !chef.holding) {
+      const sweetSpot =
+        (station.item === 'seared_steak' || station.item === 'seared_salmon') &&
+        station.progress >= SEAR_DURATION &&
+        station.progress <= SEAR_DURATION + 1.8;
       chef.holding = { kind: 'ingredient', id: station.item };
       station.item = null;
       station.progress = 0;
       station.burned = false;
       station.pulse = 0.9;
+      if (sweetSpot && orders) {
+        orders.score += 35;
+        events.push({ type: 'perfect_sear', col, row, bonus: 35 });
+      }
       events.push({ type: 'pickup', col, row, item: chef.holding.id });
       return true;
     }

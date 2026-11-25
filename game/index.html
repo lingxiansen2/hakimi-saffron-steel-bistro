@@ -18,18 +18,15 @@
 
     <section id="title-overlay" class="modal-backdrop title-backdrop" aria-labelledby="title-heading">
       <div class="bistro-card title-card">
+        <img id="title-banner-img" class="title-banner" src="./assets/bistro-banner.webp" alt="Saffron and Steel Bistro Kitchen" />
         <div class="crest-row">
           <span class="crest-badge">FRENCH-JAPANESE FUSION</span>
-          <span class="crest-badge crest-gold">4 APPLIANCES &bull; 6+ DISHES</span>
+          <span class="crest-badge crest-gold">DUAL-CHEF BRIGADE &bull; 10 DISHES &bull; UPGRADES</span>
         </div>
         <h1 id="title-heading">SAFFRON &amp; STEEL</h1>
         <p class="subtitle">BISTRO RUSH &bull; MASTER THE LINE</p>
-        <p class="tagline">
-          Sear Wagyu &amp; salmon on copper stoves, simmer saffron dashi broth, bake brioche in the wood-fired hearth,
-          chop heirloom produce, assemble on marble islands, and ring the golden bell for VIP combos.
-        </p>
 
-        <div id="title-recipe-strip" class="recipe-strip" aria-label="Menu Overview"></div>
+        <div id="title-recipe-strip" class="recipe-strip" aria-label="Signature Menu"></div>
 
         <div class="shift-selector" role="group" aria-label="Select Shift">
           <button class="shift-btn" data-shift="0" type="button">
@@ -53,6 +50,7 @@
         <div class="controls-legend">
           <span><strong>Move:</strong> WASD / Arrows or Click Station</span>
           <span><strong>Act:</strong> Space / E or Click</span>
+          <span><strong>Brigade:</strong> Tab / 1-2 Switch Ren &amp; Hana</span>
           <span><strong>Dash:</strong> Q / Shift</span>
         </div>
       </div>
@@ -66,10 +64,10 @@
         </div>
         <div id="guide-recipes" class="guide-grid"></div>
         <div class="guide-tips">
-          <div><strong>Copper Stoves:</strong> Sear Wagyu &amp; Salmon. Pull off before the red burn gauge!</div>
-          <div><strong>Cast-Iron Stockpot:</strong> Simmer Dashi Base into rich golden Saffron Broth.</div>
+          <div><strong>Copper Stoves:</strong> Sear Wagyu &amp; Salmon. Pull at sweet-spot for +$35 bonus!</div>
+          <div><strong>Cast-Iron Stockpot:</strong> Simmer Dashi Base into golden Saffron Broth.</div>
           <div><strong>Wood-Fired Hearth Oven:</strong> Bake Brioche Dough into golden crusty brioche.</div>
-          <div><strong>Butcher Boards &amp; Pass:</strong> Chop produce, plate on Marble Islands, ring Bell!</div>
+          <div><strong>Dual-Chef Brigade:</strong> Press Tab / 1-2 to direct Ren &amp; Hana simultaneously!</div>
         </div>
       </div>
     </section>
@@ -82,7 +80,7 @@
 
         <div class="stats-grid">
           <div class="stat-box">
-            <span class="stat-label">TOTAL REVENUE</span>
+            <span class="stat-label">SHIFT REVENUE</span>
             <strong id="clear-score" class="stat-val gold">$0</strong>
           </div>
           <div class="stat-box">
@@ -94,12 +92,15 @@
             <strong id="clear-combo" class="stat-val">x1</strong>
           </div>
           <div class="stat-box">
-            <span class="stat-label">MISSED TICKETS</span>
-            <strong id="clear-missed" class="stat-val">0</strong>
+            <span class="stat-label">BANK BALANCE</span>
+            <strong id="clear-bank" class="stat-val green">$0</strong>
           </div>
         </div>
 
         <div id="clear-breakdown" class="breakdown-row"></div>
+
+        <div class="shop-heading">KITCHEN UPGRADE SHOP</div>
+        <div id="upgrade-shop" class="upgrade-grid" aria-label="Kitchen Upgrades"></div>
 
         <div class="cta-row">
           <button id="btn-next-shift" class="primary-btn" type="button">NEXT SHIFT</button>
