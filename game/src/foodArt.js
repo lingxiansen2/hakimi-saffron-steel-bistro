@@ -3,7 +3,7 @@ import { drawPorcelainPlate, traceRoundedRect } from './drawPrimitives.js';
 export function renderIngredientArt(ctx, itemId, cx, cy, scale = 1) {
   ctx.save();
   ctx.translate(cx, cy);
-  ctx.scale(scale * 1.16, scale * 1.16);
+  ctx.scale(scale * 1.32, scale * 1.32);
 
   switch (itemId) {
     case 'steak':
@@ -67,7 +67,7 @@ export function renderIngredientArt(ctx, itemId, cx, cy, scale = 1) {
 export function renderPlatedDish(ctx, recipeId, cx, cy, scale = 1, glow = false) {
   ctx.save();
   ctx.translate(cx, cy);
-  ctx.scale(scale * 1.18, scale * 1.18);
+  ctx.scale(scale * 1.3, scale * 1.3);
 
   drawPorcelainPlate(ctx, 25, glow);
 
@@ -103,7 +103,7 @@ export function renderPlatedDish(ctx, recipeId, cx, cy, scale = 1, glow = false)
 export function renderMidAssemblyPlate(ctx, items, cx, cy, scale = 1) {
   ctx.save();
   ctx.translate(cx, cy);
-  ctx.scale(scale * 1.18, scale * 1.18);
+  ctx.scale(scale * 1.3, scale * 1.3);
 
   drawPorcelainPlate(ctx, 25, false);
 
@@ -132,13 +132,13 @@ export function renderMidAssemblyPlate(ctx, items, cx, cy, scale = 1) {
 }
 
 function drawRawWagyu(ctx) {
-  ctx.fillStyle = 'rgba(0,0,0,0.22)';
+  ctx.fillStyle = 'rgba(0,0,0,0.26)';
   ctx.beginPath();
   ctx.ellipse(1, 5, 19, 13, -0.15, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = '#c43636';
-  ctx.strokeStyle = '#f6d5cd';
-  ctx.lineWidth = 2.4;
+  ctx.fillStyle = '#cf3535';
+  ctx.strokeStyle = '#3b1512';
+  ctx.lineWidth = 2.6;
   ctx.beginPath();
   ctx.moveTo(-17, -2);
   ctx.bezierCurveTo(-18, -14, 4, -15, 16, -6);
@@ -146,8 +146,8 @@ function drawRawWagyu(ctx) {
   ctx.bezierCurveTo(-14, 12, -18, 6, -17, -2);
   ctx.fill();
   ctx.stroke();
-  ctx.strokeStyle = 'rgba(255, 228, 220, 0.82)';
-  ctx.lineWidth = 1.6;
+  ctx.strokeStyle = '#ffded6';
+  ctx.lineWidth = 1.9;
   ctx.beginPath();
   ctx.moveTo(-9, -4);
   ctx.quadraticCurveTo(-1, -1, 4, -6);
@@ -285,16 +285,19 @@ function drawBriocheDough(ctx) {
 }
 
 function drawBakedBrioche(ctx) {
-  ctx.fillStyle = 'rgba(0,0,0,0.22)';
+  ctx.fillStyle = 'rgba(0,0,0,0.24)';
   ctx.beginPath();
   ctx.ellipse(0, 7, 17, 8, 0, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = '#cc7e2e';
+  ctx.fillStyle = '#c47222';
+  ctx.strokeStyle = '#5c2d09';
+  ctx.lineWidth = 1.6;
   traceRoundedRect(ctx, -16, 1, 32, 9, 4);
   ctx.fill();
-  ctx.fillStyle = '#f1ad49';
-  ctx.strokeStyle = '#a8631f';
-  ctx.lineWidth = 1.8;
+  ctx.stroke();
+  ctx.fillStyle = '#f3ae46';
+  ctx.strokeStyle = '#6e370b';
+  ctx.lineWidth = 2.1;
   ctx.beginPath();
   ctx.arc(0, 2, 16, Math.PI, 0);
   ctx.closePath();
@@ -303,20 +306,20 @@ function drawBakedBrioche(ctx) {
   ctx.fillStyle = '#fff6d4';
   for (const [sx, sy] of [[-6, -7], [0, -9], [6, -6], [-3, -4], [4, -3]]) {
     ctx.beginPath();
-    ctx.ellipse(sx, sy, 1.8, 1.1, 0.3, 0, Math.PI * 2);
+    ctx.ellipse(sx, sy, 1.9, 1.2, 0.3, 0, Math.PI * 2);
     ctx.fill();
   }
 }
 
 function drawWholeTomato(ctx) {
-  ctx.fillStyle = '#e4382f';
-  ctx.strokeStyle = '#991b16';
-  ctx.lineWidth = 1.8;
+  ctx.fillStyle = '#e8372c';
+  ctx.strokeStyle = '#6b110d';
+  ctx.lineWidth = 2.2;
   ctx.beginPath();
   ctx.arc(0, 1, 13.5, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
-  ctx.fillStyle = 'rgba(255, 204, 192, 0.58)';
+  ctx.fillStyle = 'rgba(255, 212, 200, 0.62)';
   ctx.beginPath();
   ctx.ellipse(-5, -4, 4, 2.3, -0.5, 0, Math.PI * 2);
   ctx.fill();

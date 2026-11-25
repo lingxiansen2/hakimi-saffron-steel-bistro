@@ -14,7 +14,7 @@ import { INGREDIENTS, MENU_CARDS, RECIPE_BY_ID } from './recipes.js';
 
 export function renderHudAndOrderRail(ctx, world) {
   const hudGrad = ctx.createLinearGradient(0, 0, 0, HUD_HEIGHT);
-  hudGrad.addColorStop(0, '#241c18');
+  hudGrad.addColorStop(0, '#261d19');
   hudGrad.addColorStop(1, '#16110f');
   ctx.fillStyle = hudGrad;
   ctx.fillRect(0, 0, CANVAS_WIDTH, HUD_HEIGHT);
@@ -29,7 +29,7 @@ export function renderHudAndOrderRail(ctx, world) {
   ctx.textBaseline = 'middle';
   ctx.fillText('SAFFRON & STEEL', 18, 27);
 
-  traceRoundedRect(ctx, 214, 13, 194, 28, 14);
+  traceRoundedRect(ctx, 212, 13, 194, 28, 14);
   ctx.fillStyle = 'rgba(244, 185, 66, 0.16)';
   ctx.fill();
   ctx.strokeStyle = 'rgba(244, 185, 66, 0.55)';
@@ -38,72 +38,74 @@ export function renderHudAndOrderRail(ctx, world) {
   ctx.fillStyle = '#fce8bd';
   ctx.font = '800 12px "Trebuchet MS", "Segoe UI", sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText(world.orders.shift.name, 311, 28);
+  ctx.fillText(world.orders.shift.name, 309, 28);
 
-  /* Timer Box */
+  /* High-Contrast Timer Box with Clock Dial Glyph */
   const urgent = world.timeRemaining <= 20;
-  traceRoundedRect(ctx, 434, 8, 144, 38, 10);
-  ctx.fillStyle = urgent ? 'rgba(217, 69, 58, 0.34)' : 'rgba(255, 255, 255, 0.08)';
+  traceRoundedRect(ctx, 424, 7, 168, 40, 10);
+  ctx.fillStyle = urgent ? '#7a1f19' : '#2a221c';
   ctx.fill();
-  ctx.strokeStyle = urgent ? '#ff6a5c' : 'rgba(244, 185, 66, 0.45)';
-  ctx.lineWidth = 1.6;
+  ctx.strokeStyle = urgent ? '#ff7c6e' : '#f4b942';
+  ctx.lineWidth = 2;
   ctx.stroke();
 
-  ctx.fillStyle = '#cbbba4';
-  ctx.font = '800 10px "Trebuchet MS", "Segoe UI", sans-serif';
+  drawClockDialGlyph(ctx, 447, 27, urgent);
+
+  ctx.fillStyle = urgent ? '#ffd0ca' : '#f4d38a';
+  ctx.font = '900 10px "Trebuchet MS", "Segoe UI", sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('TIMER', 448, 19);
-  ctx.fillStyle = urgent ? '#ff9d94' : '#ffffff';
-  ctx.font = '900 22px "Consolas", "Courier New", monospace';
-  ctx.fillText(formatClock(world.timeRemaining), 447, 36);
+  ctx.fillText('TIMER', 470, 17);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '900 24px "Consolas", "Courier New", monospace';
+  ctx.fillText(formatClock(world.timeRemaining), 469, 36);
 
   /* Score Box */
-  traceRoundedRect(ctx, 594, 8, 152, 38, 10);
-  ctx.fillStyle = 'rgba(46, 166, 111, 0.18)';
+  traceRoundedRect(ctx, 604, 7, 150, 40, 10);
+  ctx.fillStyle = 'rgba(46, 166, 111, 0.22)';
   ctx.fill();
-  ctx.strokeStyle = 'rgba(110, 227, 166, 0.52)';
+  ctx.strokeStyle = 'rgba(110, 227, 166, 0.6)';
   ctx.lineWidth = 1.6;
   ctx.stroke();
-  ctx.fillStyle = '#9fe9be';
+  ctx.fillStyle = '#a8f2c6';
   ctx.font = '800 10px "Trebuchet MS", "Segoe UI", sans-serif';
-  ctx.fillText('REVENUE', 608, 19);
-  ctx.fillStyle = '#fff6dc';
-  ctx.font = '900 21px "Trebuchet MS", "Segoe UI", sans-serif';
-  ctx.fillText(`$${world.orders.score}`, 608, 36);
+  ctx.fillText('REVENUE', 618, 17);
+  ctx.fillStyle = '#fff8e2';
+  ctx.font = '900 22px "Trebuchet MS", "Segoe UI", sans-serif';
+  ctx.fillText(`$${world.orders.score}`, 618, 36);
 
   /* Combo Box */
   const comboActive = world.orders.combo > 1 && world.orders.comboTimer > 0;
-  traceRoundedRect(ctx, 762, 8, 168, 38, 10);
+  traceRoundedRect(ctx, 766, 7, 168, 40, 10);
   ctx.fillStyle = comboActive ? 'rgba(244, 185, 66, 0.28)' : 'rgba(255, 255, 255, 0.06)';
   ctx.fill();
   ctx.strokeStyle = comboActive ? '#f4b942' : 'rgba(255, 255, 255, 0.22)';
   ctx.lineWidth = 1.6;
   ctx.stroke();
 
-  ctx.fillStyle = comboActive ? '#f7d56b' : '#b7a995';
+  ctx.fillStyle = comboActive ? '#ffe078' : '#b7a995';
   ctx.font = '900 16px "Trebuchet MS", "Segoe UI", sans-serif';
   ctx.textAlign = 'center';
   const comboLabel = world.orders.combo > 1 ? `x${world.orders.combo} COMBO!` : 'NO COMBO';
-  ctx.fillText(comboLabel, 846, 24);
+  ctx.fillText(comboLabel, 850, 23);
 
   if (world.orders.comboTimer > 0) {
     const ratio = Math.min(1, world.orders.comboTimer / COMBO_WINDOW);
-    traceRoundedRect(ctx, 774, 36, 144 * ratio, 5, 2.5);
+    traceRoundedRect(ctx, 778, 36, 144 * ratio, 5, 2.5);
     ctx.fillStyle = '#f4b942';
     ctx.fill();
   }
 
-  /* Stainless Order Rail */
+  /* Stainless Steel Order Rail */
   const railGrad = ctx.createLinearGradient(0, RAIL_TOP, 0, RAIL_TOP + RAIL_HEIGHT);
-  railGrad.addColorStop(0, '#30343b');
-  railGrad.addColorStop(0.5, '#25282e');
-  railGrad.addColorStop(1, '#1d1f24');
+  railGrad.addColorStop(0, '#363b42');
+  railGrad.addColorStop(0.5, '#292d34');
+  railGrad.addColorStop(1, '#1e2127');
   ctx.fillStyle = railGrad;
   ctx.fillRect(0, RAIL_TOP, CANVAS_WIDTH, RAIL_HEIGHT);
 
-  ctx.fillStyle = '#6c7682';
+  ctx.fillStyle = '#7c8694';
   ctx.fillRect(14, RAIL_TOP + 6, CANVAS_WIDTH - 28, 6);
-  ctx.fillStyle = '#9aa6b4';
+  ctx.fillStyle = '#b4c0cf';
   ctx.fillRect(14, RAIL_TOP + 6, CANVAS_WIDTH - 28, 2);
 
   const activeAssemblySet = new Set();
@@ -115,7 +117,7 @@ export function renderHudAndOrderRail(ctx, world) {
 
   const orders = world.orders.orders;
   const ticketW = 228;
-  const ticketH = 98;
+  const ticketH = 99;
   const gap = 16;
   const startX = 24;
 
@@ -124,53 +126,76 @@ export function renderHudAndOrderRail(ctx, world) {
     const tx = startX + idx * (ticketW + gap);
     const ty = RAIL_TOP + 10;
     const pct = Math.max(0, Math.min(1, order.remaining / order.totalPatience));
-    const headerColor = order.isVip ? '#eab035' : pct > 0.5 ? '#2ea66f' : pct > 0.25 ? '#e8962c' : '#d9453a';
+    const barColor = pct > 0.5 ? '#2d8a5b' : pct > 0.25 ? '#d97e24' : '#c9382e';
+    const headerColor = order.isVip ? '#d4911a' : barColor;
 
-    ctx.fillStyle = order.isVip ? '#f4b942' : '#c9d2dc';
-    ctx.fillRect(tx + ticketW / 2 - 12, ty - 5, 24, 9);
+    /* Silver metallic rail clip */
+    ctx.fillStyle = '#d3dce6';
+    ctx.strokeStyle = '#535d69';
+    ctx.lineWidth = 1.2;
+    traceRoundedRect(ctx, tx + ticketW / 2 - 14, ty - 6, 28, 10, 3);
+    ctx.fill();
+    ctx.stroke();
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.36)';
+    /* Ticket shadow */
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
     traceRoundedRect(ctx, tx + 2, ty + 4, ticketW, ticketH, 8);
     ctx.fill();
 
+    /* Warm cream parchment ticket body */
+    const paperGrad = ctx.createLinearGradient(tx, ty, tx, ty + ticketH);
+    paperGrad.addColorStop(0, order.isVip ? '#fff9e6' : '#fff7e6');
+    paperGrad.addColorStop(1, order.isVip ? '#f9e3ad' : '#f2e2c2');
     traceRoundedRect(ctx, tx, ty, ticketW, ticketH, 8);
-    ctx.fillStyle = order.isVip ? '#fff9e6' : '#fcf4e3';
+    ctx.fillStyle = paperGrad;
     ctx.fill();
-    ctx.strokeStyle = order.isVip ? '#f4b942' : pct < 0.25 ? '#d9453a' : '#cbb899';
-    ctx.lineWidth = order.isVip || pct < 0.25 ? 2.5 : 1.5;
+    ctx.strokeStyle = order.isVip ? '#f4b942' : pct < 0.25 ? '#d9453a' : '#b89d72';
+    ctx.lineWidth = order.isVip || pct < 0.25 ? 2.4 : 1.6;
     ctx.stroke();
 
-    traceRoundedRect(ctx, tx + 1, ty + 1, ticketW - 2, 24, 7);
+    /* Bold colored ticket header */
+    traceRoundedRect(ctx, tx + 1, ty + 1, ticketW - 2, 25, 7);
     ctx.fillStyle = headerColor;
     ctx.fill();
 
-    ctx.fillStyle = order.isVip ? '#1f150c' : '#ffffff';
-    ctx.font = '900 12px "Trebuchet MS", "Segoe UI", sans-serif';
-    ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    const titlePrefix = order.isVip ? `★ #${order.id}` : `#${order.id}`;
-    ctx.fillText(`${titlePrefix} ${recipe.shortName.toUpperCase()}`, tx + 8, ty + 13);
+    if (order.isVip) {
+      drawCrownGlyph(ctx, tx + 13, ty + 14);
+      ctx.fillStyle = '#1f1204';
+      ctx.font = '900 12px "Trebuchet MS", "Segoe UI", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`VIP #${order.id} SURF & TURF`, tx + 24, ty + 14);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#291702';
+      ctx.fillText(`+$${recipe.reward}`, tx + ticketW - 8, ty + 14);
+    } else {
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 12px "Trebuchet MS", "Segoe UI", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`#${order.id} ${recipe.shortName.toUpperCase()}`, tx + 9, ty + 14);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fff6cf';
+      ctx.fillText(`+$${recipe.reward}`, tx + ticketW - 8, ty + 14);
+    }
 
-    ctx.textAlign = 'right';
-    ctx.fillStyle = order.isVip ? '#2e1a05' : '#fff5c8';
-    ctx.fillText(`+$${recipe.reward}`, tx + ticketW - 8, ty + 13);
+    /* Plated dish illustration on left */
+    renderPlatedDish(ctx, recipe.id, tx + 35, ty + 55, 0.82, false);
 
-    renderPlatedDish(ctx, recipe.id, tx + 34, ty + 55, 0.88, false);
-
+    /* 3 Ingredient steps on right */
     recipe.ingredients.forEach((ingId, stepIdx) => {
       const ix = tx + 88 + stepIdx * 46;
-      const iy = ty + 53;
+      const iy = ty + 54;
       const matched = activeAssemblySet.has(ingId);
       traceRoundedRect(ctx, ix - 19, iy - 19, 38, 38, 8);
-      ctx.fillStyle = matched ? 'rgba(46, 166, 111, 0.2)' : 'rgba(130, 92, 54, 0.14)';
+      ctx.fillStyle = matched ? 'rgba(45, 138, 91, 0.22)' : 'rgba(92, 62, 34, 0.12)';
       ctx.fill();
-      ctx.strokeStyle = matched ? '#2ea66f' : 'rgba(130, 92, 54, 0.35)';
-      ctx.lineWidth = 1.4;
+      ctx.strokeStyle = matched ? '#2d8a5b' : 'rgba(110, 78, 44, 0.42)';
+      ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      renderIngredientArt(ctx, ingId, ix, iy, 0.6);
+      renderIngredientArt(ctx, ingId, ix, iy, 0.57);
       if (matched) {
-        ctx.fillStyle = '#2ea66f';
+        ctx.fillStyle = '#2d8a5b';
         ctx.beginPath();
         ctx.arc(ix + 13, iy - 13, 6.5, 0, Math.PI * 2);
         ctx.fill();
@@ -184,21 +209,22 @@ export function renderHudAndOrderRail(ctx, world) {
       }
     });
 
+    /* Patience Bar */
     traceRoundedRect(ctx, tx + 8, ty + ticketH - 15, ticketW - 50, 8, 4);
-    ctx.fillStyle = '#dfd0b8';
+    ctx.fillStyle = '#d7c4a1';
     ctx.fill();
     traceRoundedRect(ctx, tx + 8, ty + ticketH - 15, (ticketW - 50) * pct, 8, 4);
-    ctx.fillStyle = pct > 0.5 ? '#2ea66f' : pct > 0.25 ? '#e8962c' : '#d9453a';
+    ctx.fillStyle = barColor;
     ctx.fill();
 
-    ctx.fillStyle = '#4a3525';
-    ctx.font = '800 11px "Consolas", monospace';
+    ctx.fillStyle = '#332215';
+    ctx.font = '900 11px "Consolas", monospace';
     ctx.textAlign = 'right';
     ctx.fillText(`${Math.ceil(order.remaining)}s`, tx + ticketW - 8, ty + ticketH - 11);
   });
 
   if (orders.length === 0) {
-    ctx.fillStyle = '#b4bcc7';
+    ctx.fillStyle = '#c9d0da';
     ctx.font = '700 14px "Trebuchet MS", "Segoe UI", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('Ticket Rail Clear — New Orders Incoming!', CANVAS_WIDTH / 2, RAIL_TOP + 58);
@@ -246,9 +272,9 @@ export function populateDomOverlays() {
     const dot = document.createElement('canvas');
     dot.width = 64;
     dot.height = 64;
-    dot.style.width = '36px';
-    dot.style.height = '36px';
-    renderPlatedDish(dot.getContext('2d'), recipe.id, 32, 32, 0.88, false);
+    dot.style.width = '38px';
+    dot.style.height = '38px';
+    renderPlatedDish(dot.getContext('2d'), recipe.id, 32, 32, 0.78, false);
 
     const nameEl = document.createElement('div');
     nameEl.className = 'dish-name';
@@ -276,7 +302,7 @@ export function populateDomOverlays() {
     gCanvas.height = 64;
     gCanvas.style.width = '40px';
     gCanvas.style.height = '40px';
-    renderPlatedDish(gCanvas.getContext('2d'), recipe.id, 32, 32, 0.88, Boolean(recipe.isVip));
+    renderPlatedDish(gCanvas.getContext('2d'), recipe.id, 32, 32, 0.78, Boolean(recipe.isVip));
 
     const gText = document.createElement('div');
     gText.style.flex = '1';
@@ -325,6 +351,44 @@ export function showClearScreen(world) {
   }
 
   clearEl.classList.remove('hidden');
+}
+
+function drawClockDialGlyph(ctx, cx, cy, urgent) {
+  ctx.save();
+  ctx.fillStyle = urgent ? '#ffdfdc' : '#fff6de';
+  ctx.strokeStyle = urgent ? '#ff6a5c' : '#d87a32';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 11.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.strokeStyle = '#291a10';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx, cy - 6);
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx + 5, cy + 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawCrownGlyph(ctx, cx, cy) {
+  ctx.save();
+  ctx.fillStyle = '#291702';
+  ctx.beginPath();
+  ctx.moveTo(cx - 6, cy + 4);
+  ctx.lineTo(cx - 7, cy - 3);
+  ctx.lineTo(cx - 3, cy);
+  ctx.lineTo(cx, cy - 5);
+  ctx.lineTo(cx + 3, cy);
+  ctx.lineTo(cx + 7, cy - 3);
+  ctx.lineTo(cx + 6, cy + 4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
 }
 
 function formatClock(seconds) {

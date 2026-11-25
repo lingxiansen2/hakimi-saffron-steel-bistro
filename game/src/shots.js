@@ -88,7 +88,7 @@ export function applyDeterministicShot(shotName, controller) {
 
     const chefSpot = tileCenterPx(7, 1);
     world.chef.x = chefSpot.x;
-    world.chef.y = chefSpot.y;
+    world.chef.y = chefSpot.y + 9;
     world.chef.facingX = 0;
     world.chef.facingY = -1;
     world.chef.holding = null;
@@ -103,7 +103,8 @@ export function applyDeterministicShot(shotName, controller) {
     world.particles.emitSizzleSpark(s1Pos.x, s1Pos.y);
     const boardPos = tileCenterPx(7, 0);
     world.particles.emitBurst(boardPos.x, boardPos.y - 6, '#ff6854', 7, 65);
-    world.particles.addScorePopup(passPos.x - 110, passPos.y + 44, '+$210  x3 COMBO!', '#f4b942', 1.15);
+    const popupPos = tileCenterPx(8, 3);
+    world.particles.addScorePopup(popupPos.x, popupPos.y - 18, '+$210  x3 COMBO!', '#f4b942', 1.2);
 
     for (let i = 0; i < 16; i++) {
       stepWorld(0.02, true);
@@ -155,15 +156,15 @@ export function applyDeterministicShot(shotName, controller) {
     getStation(world.kitchen, 4, 2).assemblyItems = ['baked_bun', 'chopped_berry'];
     getStation(world.kitchen, 7, 2).item = { kind: 'ingredient', id: 'chopped_greens' };
 
-    const chefPos = tileCenterPx(8, 3);
+    const chefPos = tileCenterPx(8, 2);
     world.chef.x = chefPos.x;
     world.chef.y = chefPos.y;
     world.chef.facingX = 1;
     world.chef.facingY = 0;
     world.chef.holding = { kind: 'plate', recipeId: 'surf_turf' };
 
-    const passPos = tileCenterPx(10, 3);
-    world.particles.addScorePopup(passPos.x - 150, passPos.y + 44, '+$320  VIP x4!', '#f4b942', 1.15);
+    const popupPos = tileCenterPx(8, 4);
+    world.particles.addScorePopup(popupPos.x, popupPos.y - 24, '+$320  VIP x4!', '#f4b942', 1.2);
     const s1Pos = tileCenterPx(3, 0);
     world.particles.emitSteamCurl(s1Pos.x, s1Pos.y - 10, true);
     world.particles.emitSteamCurl(s1Pos.x + 102, s1Pos.y - 10, false);
